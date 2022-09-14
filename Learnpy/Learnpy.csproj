@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6FAAE813-E046-488C-9FBA-75CBC43EDF04}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Learnpy</RootNamespace>
+    <AssemblyName>Learnpy</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Assets\Fonts\DefFont.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets.cs" />
+    <Compile Include="Collision.cs" />
+    <Compile Include="Content\Components\BoxComponent.cs" />
+    <Compile Include="Content\Components\MoveableComponent.cs" />
+    <Compile Include="Content\Components\PuzzleComponent.cs" />
+    <Compile Include="Content\Components\TextureComponent.cs" />
+    <Compile Include="Content\Components\TransformComponent.cs" />
+    <Compile Include="Content\Enums.cs" />
+    <Compile Include="Content\Systems\CollisionSystem.cs" />
+    <Compile Include="Content\Systems\ConnectionSystem.cs" />
+    <Compile Include="Content\Systems\DragSystem.cs" />
+    <Compile Include="Content\Systems\DrawSystem.cs" />
+    <Compile Include="Content\Systems\ReadOrderSystem.cs" />
+    <Compile Include="Content\Systems\RunCodeSystem.cs" />
+    <Compile Include="Core\ECS\Archetype.cs" />
+    <Compile Include="Core\ECS\Entity.cs" />
+    <Compile Include="Core\ECS\IComponent.cs" />
+    <Compile Include="Core\ECS\ISystem.cs" />
+    <Compile Include="Core\ECS\World.cs" />
+    <Compile Include="Core\Globals.cs" />
+    <Compile Include="Core\LearnGame.cs" />
+    <Compile Include="EntryPoint.cs" />
+    <Compile Include="Input.cs" />
+    <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Pixel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TheRoad\SpriteFontPlus\src\SpriteFontPlus.FNA.csproj">
+      <Project>{e84e17c8-5c8f-4516-8134-bdec970b69da}</Project>
+      <Name>SpriteFontPlus.FNA</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
