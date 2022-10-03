@@ -3,7 +3,7 @@ using static Learnpy.Content.Enums;
 
 namespace Learnpy.Content.Components
 {
-    public struct PuzzleComponent : IComponent
+    public struct PuzzleComponent
     {
         public PieceType PieceType;
 

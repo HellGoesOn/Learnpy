@@ -15,6 +15,9 @@ namespace Learnpy
         private readonly static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
 
         public static SpriteFont DefaultFont { get; private set; }
+        public static SpriteFont DefaultFontSmall { get; private set; }
+
+        public static SpriteFont DefaultFontBig { get; private set; }
 
         public static Texture2D LoadTexture(string id, string path)
         {
@@ -55,6 +58,34 @@ namespace Learnpy
                 });
 
             DefaultFont = fontDefault.CreateSpriteFont(EntryPoint.Instance.GraphicsDevice);
+
+            var fontDefaultBig = TtfFontBaker.Bake(File.ReadAllBytes("Assets/Fonts/DefFont.ttf"),
+                60,
+                1024,
+                1024,
+                new[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.Cyrillic,
+                    CharacterRange.LatinExtendedA
+                });
+
+            DefaultFontBig = fontDefaultBig.CreateSpriteFont(EntryPoint.Instance.GraphicsDevice);
+
+            var fontDefaultSmall = TtfFontBaker.Bake(File.ReadAllBytes("Assets/Fonts/DefFont.ttf"),
+                14,
+                1024,
+                1024,
+                new[]
+                {
+                    CharacterRange.BasicLatin,
+                    CharacterRange.Latin1Supplement,
+                    CharacterRange.Cyrillic,
+                    CharacterRange.LatinExtendedA
+                });
+
+            DefaultFontSmall = fontDefaultSmall.CreateSpriteFont(EntryPoint.Instance.GraphicsDevice);
         }
 
         public static void Unload()

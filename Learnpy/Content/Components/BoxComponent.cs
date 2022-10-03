@@ -4,7 +4,7 @@ using static Learnpy.Collision;
 
 namespace Learnpy.Content.Components
 {
-    public struct BoxComponent : IComponent
+    public struct BoxComponent
     {
         public AABB Box;
 

@@ -2,7 +2,7 @@
 
 namespace Learnpy.Content.Components
 {
-    public struct TextureComponent : IComponent
+    public struct TextureComponent
     {
         public readonly string Name;
 

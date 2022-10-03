@@ -14,29 +14,22 @@ namespace Learnpy.Core.ECS
             BelongsTo = world;
         }
 
-        public T GetComponent<T>()
-            where T : IComponent
+        public ref T GetComponent<T>()
+            where T : struct
         {
-            return (T)BelongsTo.Components[typeof(T)][Id];
-        }
-
-        public void SetComponent(IComponent component)
-        {
-            BelongsTo.Components[component.GetType()][Id] = component;
+            return ref BelongsTo.GetComponent<T>(Id);
         }
 
         public bool HasComponent<T>()
-            where T : IComponent
-        {
-            return BelongsTo.Components[typeof(T)][Id] != default;
-        }
-
-        public void AddComponent(IComponent component)
+            where T : struct
+            => BelongsTo.Components[typeof(T)].HasComponent(Id);
+        public void AddComponent<T>(T component)
+            where T : struct
         {
             BelongsTo.AddComponent(this.Id, component);
         }
 
-        public void RemoveComponent<T>() where T : IComponent
+        public void RemoveComponent<T>() where T : struct
         {
             BelongsTo.RemoveComponent(Id, GetComponent<T>());
         }

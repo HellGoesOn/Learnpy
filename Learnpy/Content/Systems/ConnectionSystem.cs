@@ -13,11 +13,13 @@ namespace Learnpy.Content.Systems
             foreach (int e in gameState.EntitiesById)
             {
                 var entity = gameState.Entities[e];
-                var puzzle = entity.GetComponent<PuzzleComponent>();
+                ref var puzzle = ref entity.GetComponent<PuzzleComponent>();
 
                 if (Input.LMBReleased && puzzle.BeingDragged)
                 {
-                    entity.SetComponent(new PuzzleComponent(puzzle.PieceType, false) { StoredText = puzzle.StoredText });
+                    puzzle.BeingDragged = false;
+                    entity.GetComponent<DragComponent>().Active = false;
+
                     var myBox = entity.GetComponent<BoxComponent>().Box;
 
                     foreach (int e2 in gameState.EntitiesById)
@@ -27,16 +29,19 @@ namespace Learnpy.Content.Systems
 
                         var entity2 = gameState.Entities[e2];
                         var pos2 = entity2.GetComponent<TransformComponent>().Position;
-                        var otherPuzzle = entity2.GetComponent<PuzzleComponent>();
+                        ref var otherPuzzle = ref entity2.GetComponent<PuzzleComponent>();
                         var otherBox = entity2.GetComponent<BoxComponent>().Box;
 
                         if (Collision.BoundingBox(myBox, otherBox).Overlapped && otherPuzzle.CanBeConnectedTo)
                         {
                             if ((puzzle.PieceType == PieceType.Middle || puzzle.PieceType == PieceType.End) && (otherPuzzle.PieceType == PieceType.Beginning || otherPuzzle.PieceType == PieceType.Middle))
                             {
-                                entity.SetComponent(new TransformComponent(pos2 + new Vector2(96, 0)));
-                                entity.SetComponent(new PuzzleComponent(puzzle.PieceType) { StoredText = puzzle.StoredText, CanConnect = false, ConnectedTo = entity2.Id, ConnectionTo = puzzle.ConnectionTo });
-                                entity2.SetComponent(new PuzzleComponent(otherPuzzle.PieceType) { StoredText = otherPuzzle.StoredText, CanBeConnectedTo = false, ConnectionTo = entity.Id, ConnectedTo = otherPuzzle.ConnectedTo});
+                                ref var trsf = ref entity.GetComponent<TransformComponent>();
+                                trsf.Position = pos2 + new Vector2(114, 0);
+                                puzzle.CanConnect = false;
+                                puzzle.ConnectedTo = entity2.Id;
+                                otherPuzzle.CanBeConnectedTo = false;
+                                otherPuzzle.ConnectionTo = entity.Id;
                                 break;
                             }
                         }

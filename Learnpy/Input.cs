@@ -11,7 +11,7 @@ namespace Learnpy
 
         static KeyboardState _oldKBState;
 
-        static Vector2 MousePos => new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+        public static Vector2 MousePos => new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
         public static AABB MouseBox => new AABB(MousePos, Vector2.One);
 

@@ -3,6 +3,7 @@ using Learnpy.Core;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace Learnpy.Content.Systems
@@ -41,6 +42,7 @@ namespace Learnpy.Content.Systems
 
         private void GetOrderList(World gameState)
         {
+            CurrentSentence = "";
             PuzzlePiecesInOrder.Clear();
             foreach (int id in gameState.EntitiesById)
             {
@@ -57,6 +59,8 @@ namespace Learnpy.Content.Systems
 
                     if (puzzle.ConnectionTo != -1)
                     {
+                        if(!string.IsNullOrWhiteSpace(CurrentSentence))
+                            CurrentSentence += Environment.NewLine;
                         var otherEntity = gameState.Entities[puzzle.ConnectionTo];
                         ids.Add(otherEntity.Id);
                         var otherPuzzle = otherEntity.GetComponent<PuzzleComponent>();
@@ -72,6 +76,8 @@ namespace Learnpy.Content.Systems
                     foreach (var i in ids)
                     {
                         PuzzlePiecesInOrder.Add(i);
+                        string txt = gameState.Entities[i].GetComponent<PuzzleComponent>().StoredText;
+                        CurrentSentence += txt;
                     }
                 }
             }
@@ -79,8 +85,14 @@ namespace Learnpy.Content.Systems
 
         public void Render(LearnGame gameRenderer)
         {
-            if(!string.IsNullOrEmpty(CurrentSentence))
-                gameRenderer.spriteBatch.DrawString(Assets.DefaultFont, CurrentSentence, new Vector2(20, 460), Color.Purple, 0f, Vector2.Zero, Vector2.One, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 1f);
+            string curTxt = "Текущий код выглядит так: \n\n\n" + CurrentSentence;
+            if (!string.IsNullOrEmpty(CurrentSentence))
+            {
+                Vector2 size = Assets.DefaultFont.MeasureString(curTxt) + new Vector2(10);
+                Color clr = EntryPoint.Instance.MainWorld.GetSystem<CompletionSystem>().Succesful ? Color.Lime : Color.Red;
+                Util.DrawRectangle(gameRenderer.spriteBatch, new Vector2(795, 45), size, Color.Black * 0.5f);
+                gameRenderer.spriteBatch.DrawString(Assets.DefaultFont, curTxt, new Vector2(800, 50), clr, 0f, Vector2.Zero, Vector2.One, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, 1f);
+            }
         }
     }
 }

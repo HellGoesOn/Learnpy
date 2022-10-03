@@ -1,7 +1,10 @@
-﻿using Learnpy.Content.Components;
+﻿using Learnpy.Content;
+using Learnpy.Content.Components;
+using Learnpy.Content.Systems;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using static Learnpy.Collision;
 using static Learnpy.Content.Enums;
@@ -23,51 +26,53 @@ namespace Learnpy.Core
         }
 
 		protected override void Initialize()
-		{
-			base.Initialize();
+        {
+            base.Initialize();
 
-			gdm.PreferredBackBufferWidth = 1366;
-			gdm.PreferredBackBufferHeight = 768;
-			gdm.ApplyChanges();
+            gdm.PreferredBackBufferWidth = 1366;
+            gdm.PreferredBackBufferHeight = 768;
+            gdm.ApplyChanges();
 
-			MainWorld = new World();
+            MainWorld = new World();
 
-			DateTime beginning = DateTime.Now;
-			Console.WriteLine($"Started at {beginning}");
-			Random rand = new Random();
+            DateTime beginning = DateTime.Now;
+            Console.WriteLine($"Started at {beginning}");
+            ResetWorld();
 
-			for (int i = 0; i < 8; i++)
-			{
-				var e = MainWorld.Create();
-				var pos = new Vector2(0, 56 * i);
-				e.AddComponent(new TransformComponent(pos));
-				e.AddComponent(new TextureComponent("PuzzlePiece"));
-				e.AddComponent(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
-				e.AddComponent(new PuzzleComponent(PieceType.Beginning));
-			}
+            Console.WriteLine($"Took: {(DateTime.Now - beginning).Milliseconds}ms");
 
-			string[] variations = new string[]
-			{
-				"print(",
-				"\'Hello World\'",
-				")"
-			};
+            SentenceFromText.Init();
+            SentenceFromText.Load(MainWorld, 0);
+        }
 
-			for (int i = 0; i < 10; i++)
-			{
-				var e = MainWorld.Create();
-				var pos = new Vector2(200 + rand.Next(400), rand.Next(400));
-				e.AddComponent(new TransformComponent(pos));
-				e.AddComponent(new TextureComponent("PuzzlePiece"));
-				e.AddComponent(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
-				e.AddComponent(new PuzzleComponent((PieceType)rand.Next(1, 3)) {StoredText = variations[rand.Next(3)] });
-				e.AddComponent(new MoveableComponent(true));
-			}
+        internal void ResetWorld()
+        {
+            foreach(Entity entity in MainWorld.Entities)
+            {
+                if(entity.BelongsTo == null) 
+                    continue;
 
-			Console.WriteLine($"Took: {(DateTime.Now - beginning).Milliseconds}ms");
-		}
+                MainWorld.Destroy(entity.Id);
+            }
 
-		protected override void LoadContent()
+            Random rand = new Random();
+
+            for (int i = 0; i < 13; i++)
+            {
+                var e = MainWorld.Create();
+                var pos = new Vector2(0, 56 * i);
+                e.AddComponent(new TransformComponent(pos));
+                e.AddComponent(new TextureComponent("PuzzlePiece"));
+                e.AddComponent(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
+                e.AddComponent(new PuzzleComponent(PieceType.Beginning));
+            }
+
+            CompletionSystem sys = MainWorld.GetSystem<CompletionSystem>();
+            sys.Time = 0;
+            sys.Succesful = false;
+        }
+
+        protected override void LoadContent()
 		{
 			base.LoadContent();
 
@@ -86,6 +91,11 @@ namespace Learnpy.Core
 		{
 			base.Update(gameTime);
 
+            if (Input.PressedKey(Keys.C))
+            {
+                ResetWorld();
+                SentenceFromText.Load(MainWorld, MainWorld.GetSystem<CompletionSystem>().LevelTarget-1);
+            }
 			MainWorld.Update();
 
 			Input.Update();

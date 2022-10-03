@@ -10,15 +10,16 @@ namespace Learnpy.Core.ECS
     {
         public List<int> IDQueue = new List<int>();
         public List<int> EntitiesById = new List<int>();
+        public List<Entity> ActiveEntities = new List<Entity>();
 
         public Entity[] Entities;
-        public Dictionary<Type, IComponent[]> Components;
+        public Dictionary<Type, IComponentCollection> Components;
         public List<ISystem> Systems;
 
         public World()
         {
             Entities = new Entity[Globals.MAX_ENTITY_COUNT];
-            Components = new Dictionary<Type, IComponent[]>();
+            Components = new Dictionary<Type, IComponentCollection>();
             Systems = new List<ISystem>();
 
             for (int i = 0; i < Globals.MAX_ENTITY_COUNT; i++)
@@ -27,11 +28,12 @@ namespace Learnpy.Core.ECS
             }
 
             // TO-DO: stuff
-            Components.Add(typeof(TransformComponent), new IComponent[Globals.MAX_ENTITY_COUNT]);
-            Components.Add(typeof(TextureComponent), new IComponent[Globals.MAX_ENTITY_COUNT]);
-            Components.Add(typeof(BoxComponent), new IComponent[Globals.MAX_ENTITY_COUNT]);
-            Components.Add(typeof(PuzzleComponent), new IComponent[Globals.MAX_ENTITY_COUNT]);
-            Components.Add(typeof(MoveableComponent), new IComponent[Globals.MAX_ENTITY_COUNT]);
+            Components.Add(typeof(TransformComponent), new ComponentCollection<TransformComponent>());
+            Components.Add(typeof(TextureComponent), new ComponentCollection<TextureComponent>());
+            Components.Add(typeof(BoxComponent), new ComponentCollection<BoxComponent>());
+            Components.Add(typeof(PuzzleComponent), new ComponentCollection<PuzzleComponent>());
+            Components.Add(typeof(MoveableComponent), new ComponentCollection<MoveableComponent>());
+            Components.Add(typeof(DragComponent), new ComponentCollection<DragComponent>());
 
             Systems.Add(new CollisionSystem());
 
@@ -42,28 +44,23 @@ namespace Learnpy.Core.ECS
             Systems.Add(new DrawSystem());
 
             Systems.Add(new RunCodeSystem());
+            Systems.Add(new CompletionSystem());
         }
 
         public void Update()
         {
-            DateTime beginning = DateTime.Now;
-            Console.WriteLine($"Update Loop started at {beginning}");
             foreach (ISystem system in Systems)
             {
                 system.Execute(this);
             }
-            Console.WriteLine($"Took: {(DateTime.Now - beginning).Milliseconds}ms");
         }
 
         public void Draw(LearnGame game)
         {
-            DateTime beginning = DateTime.Now;
-            Console.WriteLine($"Draw Loop started at {beginning}");
             foreach (ISystem sys in Systems)
             {
                 sys.Render(game);
             }
-            Console.WriteLine($"Took: {(DateTime.Now - beginning).Milliseconds}ms");
         }
 
         public Entity Create()
@@ -79,51 +76,54 @@ namespace Learnpy.Core.ECS
 
             IDQueue.RemoveAt(0);
             EntitiesById.Add(id);
+            ActiveEntities.Add(e);
 
             return e;
         }
 
         public void Destroy(int entityId)
         {
-            Entities[entityId] = default;
+            foreach (var comp in Components.Keys)
+            {
+                Components[comp].RemoveComponent(entityId);
+            }
+            ActiveEntities.Remove(Entities[entityId]);
             IDQueue.Insert(0, entityId);
             EntitiesById.Remove(entityId);
-            LogWorldData();
+            Entities[entityId] = default;
         }
 
-        public void AddComponent(int entityId, IComponent component)
+        public void AddComponent<T>(int entityId, T component)
+            where T : struct
         {
             Type componentType = component.GetType();
-            Components[componentType][entityId] = component;
 
-            Console.WriteLine($"Added {component.GetType().Name} to Entity {entityId}");
-            LogWorldData();
+            ComponentCollection<T> s = Components[componentType] as ComponentCollection<T>;
+
+            s.Add(entityId, component);
         }
 
-        public void RemoveComponent(int entityId, IComponent component)
+        public void RemoveComponent<T>(int entityId, T component)
+            where T: struct
         {
-            Components[component.GetType()][entityId] = default;
-            Console.WriteLine($"Removed {component.GetType().Name} from Entity {entityId}");
-            LogWorldData();
+            Components[component.GetType()].RemoveComponent(entityId);
         }
 
-        public void RemoveComponent<T>(int entityId) where T : IComponent
+        public void RemoveComponent<T>(int entityId) where T : struct
         {
-            Components[typeof(T)][entityId] = default;
-            Console.WriteLine($"Removed {typeof(T).Name} from Entity {entityId}");
-            LogWorldData();
+            Components[typeof(T)].RemoveComponent(entityId);
         }
 
-        public T GetComponent<T>(int entityId) where T : IComponent
-        {
-            var component = (T)Components[typeof(T)][entityId];
-            return component;
-        }
+        public ref T GetComponent<T>(int entityId) where T : struct
+            => ref (Components[typeof(T)] as ComponentCollection<T>).Get(entityId);
 
-        public void LogWorldData()
+        public T GetSystem<T>()
+            where T : ISystem
         {
-            Console.WriteLine($"Current Entity Count is {EntitiesById.Count}");
-            Console.WriteLine($"Current Free Entity ID Count is {IDQueue.Count}");
+            if (Systems.Count <= 0 || Systems.Find(x => x.GetType() == typeof(T)) == null)
+                return default(T);
+
+            return (T)Systems.Find(x => x.GetType() == typeof(T));
         }
     }
 }

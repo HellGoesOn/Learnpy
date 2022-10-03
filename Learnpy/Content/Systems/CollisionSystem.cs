@@ -11,10 +11,10 @@ namespace Learnpy.Content.Systems
             foreach (int e in gameState.EntitiesById)
             {
                 var entity = gameState.Entities[e];
-                var entityBox = entity.GetComponent<BoxComponent>();
+                ref var entityBox = ref entity.GetComponent<BoxComponent>();
                 var pos = entity.GetComponent<TransformComponent>().Position;
 
-                entity.SetComponent(new BoxComponent(pos + entityBox.Box.Halfwidths, entityBox.Box.Halfwidths));
+                entityBox.Box = new Collision.AABB(pos + entityBox.Box.Halfwidths, entityBox.Box.Halfwidths);
             }
         }
 

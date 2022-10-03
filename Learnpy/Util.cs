@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Text.RegularExpressions;
 
 namespace Learnpy
 {
@@ -8,6 +10,11 @@ namespace Learnpy
         public static void DrawRectangle(SpriteBatch sb, Vector2 position, Vector2 size, Color clr = default, float depth = 0f)
         {
             sb.Draw(Assets.GetTexture("Pixel"), position, new Rectangle(0, 0, (int)size.X, (int)size.Y), clr, 0f, Vector2.Zero, 1f, SpriteEffects.None, depth);
+        }
+
+        public static string SpliceText(string text, int lineLength)
+        {
+            return Regex.Replace(text, "(.{" + lineLength + "})" + ' ', "$1" + Environment.NewLine);
         }
     }
 }

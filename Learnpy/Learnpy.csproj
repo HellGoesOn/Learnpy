@@ -60,20 +60,23 @@
     <Compile Include="Assets.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Content\Components\BoxComponent.cs" />
+    <Compile Include="Content\Components\DragComponent.cs" />
     <Compile Include="Content\Components\MoveableComponent.cs" />
     <Compile Include="Content\Components\PuzzleComponent.cs" />
     <Compile Include="Content\Components\TextureComponent.cs" />
     <Compile Include="Content\Components\TransformComponent.cs" />
     <Compile Include="Content\Enums.cs" />
+    <Compile Include="Content\SentenceFromText.cs" />
     <Compile Include="Content\Systems\CollisionSystem.cs" />
+    <Compile Include="Content\Systems\CompletionSystem.cs" />
     <Compile Include="Content\Systems\ConnectionSystem.cs" />
     <Compile Include="Content\Systems\DragSystem.cs" />
     <Compile Include="Content\Systems\DrawSystem.cs" />
     <Compile Include="Content\Systems\ReadOrderSystem.cs" />
     <Compile Include="Content\Systems\RunCodeSystem.cs" />
     <Compile Include="Core\ECS\Archetype.cs" />
+    <Compile Include="Core\ECS\ComponentCollection.cs" />
     <Compile Include="Core\ECS\Entity.cs" />
-    <Compile Include="Core\ECS\IComponent.cs" />
     <Compile Include="Core\ECS\ISystem.cs" />
     <Compile Include="Core\ECS\World.cs" />
     <Compile Include="Core\Globals.cs" />
@@ -81,6 +84,14 @@
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Lessons\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Lessons\1_HelloWorld.txt" />
+    <Content Include="Content\Lessons\2_Input.txt" />
+    <Content Include="Content\Lessons\3_IfStatement.txt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\**">
@@ -98,6 +109,8 @@
       <Name>SpriteFontPlus.FNA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

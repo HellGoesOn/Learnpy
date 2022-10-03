@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Learnpy.Content.Components
 {
-    public struct TransformComponent : IComponent
+    public struct TransformComponent
     {
         public Vector2 Position;
 
