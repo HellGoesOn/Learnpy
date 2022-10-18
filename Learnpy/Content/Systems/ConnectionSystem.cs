@@ -2,6 +2,7 @@
 using Learnpy.Core;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
+using System.Linq;
 using static Learnpy.Content.Enums;
 
 namespace Learnpy.Content.Systems
@@ -10,21 +11,32 @@ namespace Learnpy.Content.Systems
     {
         public void Execute(World gameState)
         {
-            foreach (int e in gameState.EntitiesById)
+            foreach (Entity entity in gameState.ActiveEntities.Where(x => x.HasComponent<PuzzleComponent>() && x.HasComponent<DragComponent>()))
             {
-                var entity = gameState.Entities[e];
                 ref var puzzle = ref entity.GetComponent<PuzzleComponent>();
+                ref var drag = ref entity.GetComponent<DragComponent>();
 
-                if (Input.LMBReleased && puzzle.BeingDragged)
+                if (Input.LMBReleased && puzzle.BeingDragged && drag.Active)
                 {
                     puzzle.BeingDragged = false;
-                    entity.GetComponent<DragComponent>().Active = false;
+                    drag.Active = false;
+
+                    if(puzzle.ConnectionTo != -1)
+                    {
+                        int connect = puzzle.ConnectionTo;
+                        while (connect != -1)
+                        {
+                            Entity connectedChild = gameState.Entities[connect];
+                            connectedChild.GetComponent<DragComponent>().Active = false;
+                            connect = connectedChild.GetComponent<PuzzleComponent>().ConnectionTo;
+                        }
+                    }
 
                     var myBox = entity.GetComponent<BoxComponent>().Box;
 
                     foreach (int e2 in gameState.EntitiesById)
                     {
-                        if (e2 == e)
+                        if (e2 == entity.Id || e2 == puzzle.ConnectionTo)
                             continue;
 
                         var entity2 = gameState.Entities[e2];
@@ -38,6 +50,18 @@ namespace Learnpy.Content.Systems
                             {
                                 ref var trsf = ref entity.GetComponent<TransformComponent>();
                                 trsf.Position = pos2 + new Vector2(114, 0);
+
+                                int connect = puzzle.ConnectionTo;
+                                int parent = entity.Id;
+                                while (connect != -1)
+                                {
+                                    var parentPos = gameState.Entities[parent].GetComponent<TransformComponent>().Position;
+                                    Entity connectedChild = gameState.Entities[connect];
+                                    connectedChild.GetComponent<TransformComponent>().Position = parentPos + new Vector2(114, 0);
+                                    parent = connectedChild.Id;
+                                    connect = connectedChild.GetComponent<PuzzleComponent>().ConnectionTo;
+                                }
+
                                 puzzle.CanConnect = false;
                                 puzzle.ConnectedTo = entity2.Id;
                                 otherPuzzle.CanBeConnectedTo = false;

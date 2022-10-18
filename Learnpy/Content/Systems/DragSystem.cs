@@ -32,19 +32,37 @@ namespace Learnpy.Content.Systems
 
                 if (Input.LMBClicked && BoundingBox(entityBox.Box, Input.MouseBox).Overlapped)
                 {
-                    if (puzzle.ConnectedTo != -1)
+                    if(puzzle.ConnectedTo != -1)
                     {
                         var otherEntity = gameState.Entities[puzzle.ConnectedTo];
+                        BoxComponent otherBox = otherEntity.GetComponent<BoxComponent>();
                         ref var puz = ref otherEntity.GetComponent<PuzzleComponent>();
+                        ref var otherDraggalbe = ref otherEntity.GetComponent<DragComponent>();
+
                         puz.ConnectionTo = -1;
-                        puz.CanConnect = true;
                         puz.CanBeConnectedTo = true;
+                    }
+
+                    if (puzzle.ConnectionTo != -1)
+                    {
+                        int connect = puzzle.ConnectionTo;
+                        while (connect != -1)
+                        {
+                            var otherEntity = gameState.Entities[connect];
+                            BoxComponent otherBox = otherEntity.GetComponent<BoxComponent>();
+                            ref var puz = ref otherEntity.GetComponent<PuzzleComponent>();
+                            ref var otherDraggalbe = ref otherEntity.GetComponent<DragComponent>();
+                            otherDraggalbe.Active = true;
+                            otherDraggalbe.DragOffset = Input.MousePos - otherBox.Box.Centre;
+
+                            connect = puz.ConnectionTo;
+                        }
                     }
 
                     puzzle.BeingDragged = true;
                     puzzle.CanConnect = true;
-                    puzzle.CanBeConnectedTo = true;
-                    puzzle.ConnectionTo = -1;
+                    //puzzle.CanBeConnectedTo = true;
+                    //puzzle.ConnectionTo = -1;
                     puzzle.ConnectedTo = -1;
 
                     drag.Active = true;
