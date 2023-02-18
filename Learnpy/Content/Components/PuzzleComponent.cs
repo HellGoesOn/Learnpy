@@ -1,7 +1,4 @@
-﻿using Learnpy.Core.ECS;
-using static Learnpy.Content.Enums;
-
-namespace Learnpy.Content.Components
+﻿namespace Learnpy.Content.Components
 {
     public struct PuzzleComponent
     {

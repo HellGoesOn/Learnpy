@@ -42,6 +42,11 @@ namespace Learnpy.Content.Systems
                     PrintTime = 0;
                     LevelTarget++;
                 }
+                else {
+                    LevelTarget = 1;
+                    EntryPoint.Instance.GameState = GameState.MainMenu;
+                    EntryPoint.Instance.ResetWorld();
+                }
             }
 
             if(!Succesful)

@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Learnpy.Collision;
-using static Learnpy.Content.Enums;
 
 namespace Learnpy.Content
 {

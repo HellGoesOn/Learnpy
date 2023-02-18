@@ -6,18 +6,25 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using static Learnpy.Collision;
-using static Learnpy.Content.Enums;
 
 namespace Learnpy.Core
 {
     public class LearnGame : Game
     {
+        internal World MainMenu;
+
 		internal World MainWorld;
 
-		internal SpriteBatch spriteBatch;
+        internal Dictionary<GameState, World> Worlds = new Dictionary<GameState, World>();
+
+        internal SpriteBatch spriteBatch;
 
 		internal GraphicsDeviceManager gdm;
+
+        internal GameState GameState;
 
         internal LearnGame()
         {
@@ -29,17 +36,84 @@ namespace Learnpy.Core
         {
             base.Initialize();
 
-            gdm.PreferredBackBufferWidth = 1366;
-            gdm.PreferredBackBufferHeight = 768;
+            gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
+            gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
 
             MainWorld = new World();
+            MainMenu = new World();
 
-            DateTime beginning = DateTime.Now;
-            Console.WriteLine($"Started at {beginning}");
+            GameState = GameState.MainMenu;
+
+            Worlds.Add(GameState.MainMenu, MainMenu);
+            Worlds.Add(GameState.Playground, MainWorld);
+
+            // init main menu
+
+            MainMenu.AddSystem<MenuSystem>();
+            MainMenu.AddCollection<MenuComponent>();
+            MainMenu.AddCollection<TransformComponent>();
+            var mainMenu = MainMenu.Create();
+            mainMenu.AddComponent(new TransformComponent());
+            mainMenu.AddComponent(new MenuComponent
+                (new MenuOption("Start", () =>
+               {
+                   GameState = GameState.Playground;
+               }),
+                new MenuOption("Options", () =>
+                {
+                    mainMenu.GetComponent<MenuComponent>().IsSelected = false;
+                    mainMenu.GetComponent<TransformComponent>().Position = new Vector2(-150, 0);
+                    var options = MainMenu.Create();
+                var resolution = new MenuOption("Resolution", () =>
+                {
+                }, true);
+                    GameOptions.Resolutions.ForEach(x => resolution.ValueList.Add(x));
+                    resolution.Action = () =>
+                    {
+                        var cmp = options.GetComponent<MenuComponent>();
+                        var val = cmp.Options[cmp.SelectedIndex].Value;
+                        var wd = Regex.Match(val.ToString(), "^.*(?=x)").Value;
+                        int width = int.Parse(wd);
+                        var h = Regex.Match(val.ToString(), "(?<=x).*").Value;
+                        int height = int.Parse(h);
+                        GameOptions.ScreenWidth = width;
+                        GameOptions.ScreenHeight = height;
+                        GameOptions.NeedsUpdate = true;
+                    };
+                    options.AddComponent(new MenuComponent(resolution,
+                        new MenuOption("Back", () => 
+                        {
+                            MainMenu.Destroy(options.Id);
+                            mainMenu.GetComponent<MenuComponent>().IsSelected = true;
+                            mainMenu.GetComponent<TransformComponent>().Position = new Vector2(0, 0);
+                        })) { IsSelected = true }
+                        );
+                }),
+                new MenuOption("Quit", () =>
+                {
+                    this.Exit();
+                })) {
+                IsSelected = true
+            });
+
+
+            // init main playground
+            MainWorld.AddCollection<TransformComponent>();
+            MainWorld.AddCollection<TextureComponent>();
+            MainWorld.AddCollection<BoxComponent>();
+            MainWorld.AddCollection<PuzzleComponent>();
+            MainWorld.AddCollection<MoveableComponent>();
+            MainWorld.AddCollection<DragComponent>();
+
+            MainWorld.AddSystem<CollisionSystem>();
+            MainWorld.AddSystem<DragSystem>();
+            MainWorld.AddSystem<ConnectionSystem>();
+            MainWorld.AddSystem<DrawSystem>();
+            MainWorld.AddSystem<RunCodeSystem>();
+            MainWorld.AddSystem<CompletionSystem>();
+
             ResetWorld();
-
-            Console.WriteLine($"Took: {(DateTime.Now - beginning).Milliseconds}ms");
 
             SentenceFromText.Init();
             SentenceFromText.Load(MainWorld, 0);
@@ -47,7 +121,8 @@ namespace Learnpy.Core
 
         internal void ResetWorld()
         {
-            foreach(Entity entity in MainWorld.Entities)
+
+            foreach (Entity entity in MainWorld.Entities)
             {
                 if(entity.BelongsTo == null) 
                     continue;
@@ -91,12 +166,24 @@ namespace Learnpy.Core
 		{
 			base.Update(gameTime);
 
-            if (Input.PressedKey(Keys.C))
+            if(GameOptions.NeedsUpdate) {
+                gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
+                gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
+                gdm.ApplyChanges();
+                GameOptions.NeedsUpdate = false;
+            }
+
+            if (GameState == GameState.Playground && Input.PressedKey(Keys.C))
             {
                 ResetWorld();
                 SentenceFromText.Load(MainWorld, MainWorld.GetSystem<CompletionSystem>().LevelTarget-1);
             }
-			MainWorld.Update();
+
+            if(Input.PressedKey(Keys.D1)) {
+                GameState = GameState.Playground;
+            }
+
+			Worlds[GameState].Update();
 
 			Input.Update();
 		}
@@ -107,7 +194,7 @@ namespace Learnpy.Core
 			base.Draw(gameTime);
 
 			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
-			MainWorld.Draw(this);
+			Worlds[GameState].Draw(this);
 			spriteBatch.End();
 		}
 	}

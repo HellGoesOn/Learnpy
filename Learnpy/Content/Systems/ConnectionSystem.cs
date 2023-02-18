@@ -3,7 +3,6 @@ using Learnpy.Core;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using System.Linq;
-using static Learnpy.Content.Enums;
 
 namespace Learnpy.Content.Systems
 {

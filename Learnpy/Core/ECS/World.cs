@@ -26,25 +26,6 @@ namespace Learnpy.Core.ECS
             {
                 IDQueue.Add(i);
             }
-
-            // TO-DO: stuff
-            Components.Add(typeof(TransformComponent), new ComponentCollection<TransformComponent>());
-            Components.Add(typeof(TextureComponent), new ComponentCollection<TextureComponent>());
-            Components.Add(typeof(BoxComponent), new ComponentCollection<BoxComponent>());
-            Components.Add(typeof(PuzzleComponent), new ComponentCollection<PuzzleComponent>());
-            Components.Add(typeof(MoveableComponent), new ComponentCollection<MoveableComponent>());
-            Components.Add(typeof(DragComponent), new ComponentCollection<DragComponent>());
-
-            Systems.Add(new CollisionSystem());
-
-            Systems.Add(new DragSystem());
-
-            Systems.Add(new ConnectionSystem());
-
-            Systems.Add(new DrawSystem());
-
-            Systems.Add(new RunCodeSystem());
-            Systems.Add(new CompletionSystem());
         }
 
         public void Update()
@@ -124,6 +105,16 @@ namespace Learnpy.Core.ECS
                 return default(T);
 
             return (T)Systems.Find(x => x.GetType() == typeof(T));
+        }
+
+        public void AddCollection<T>() where T : struct
+        {
+            Components.Add(typeof(T), new ComponentCollection<T>());
+        }
+
+        public void AddSystem<T>() where T : ISystem, new()
+        {
+            Systems.Add(new T());
         }
     }
 }

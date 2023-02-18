@@ -61,6 +61,7 @@
     <Compile Include="Collision.cs" />
     <Compile Include="Content\Components\BoxComponent.cs" />
     <Compile Include="Content\Components\DragComponent.cs" />
+    <Compile Include="Content\Components\MenuComponent.cs" />
     <Compile Include="Content\Components\MoveableComponent.cs" />
     <Compile Include="Content\Components\PuzzleComponent.cs" />
     <Compile Include="Content\Components\TextureComponent.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Content\Systems\ConnectionSystem.cs" />
     <Compile Include="Content\Systems\DragSystem.cs" />
     <Compile Include="Content\Systems\DrawSystem.cs" />
+    <Compile Include="Content\Systems\MenuSystem.cs" />
     <Compile Include="Content\Systems\ReadOrderSystem.cs" />
     <Compile Include="Content\Systems\RunCodeSystem.cs" />
     <Compile Include="Core\ECS\Archetype.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Core\Globals.cs" />
     <Compile Include="Core\LearnGame.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="GameOptions.cs" />
     <Compile Include="Input.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
@@ -112,5 +115,6 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

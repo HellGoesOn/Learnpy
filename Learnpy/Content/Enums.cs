@@ -1,12 +1,15 @@
 ﻿namespace Learnpy.Content
 {
-    public static class Enums
+    public enum PieceType
     {
-        public enum PieceType
-        {
-            Beginning,
-            Middle,
-            End
-        }
+        Beginning,
+        Middle,
+        End
+    }
+
+    public enum GameState
+    {
+        MainMenu,
+        Playground
     }
 }
