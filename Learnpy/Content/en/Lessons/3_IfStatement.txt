@@ -1,0 +1,11 @@
+Task:
+You will often need to use branching code.
+To do that, you will need 'if' statement.
+Create a program that reads a value into a variable, and if its
+greater than 10, the program must print out 'Success'.
+Don't forget: in «Python», to make the program 'understand' that code block
+relates to the 'if' statement, the next line must have a tabulation(empty space)
+♪
+a =♪ int(♪input()♪)
+if♪ a > 10♪:
+	♪ print('♪Success'♪)

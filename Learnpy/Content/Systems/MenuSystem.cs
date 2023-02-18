@@ -2,6 +2,7 @@
 using Learnpy.Core;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -74,14 +75,16 @@ namespace Learnpy.Content.Systems
 
                 foreach (var option in comp.Options) {
                     bool selected = comp.SelectedIndex == off;
-                    string txt = option.Name;
+                    string txt = Locale.Translations[option.Name];
+                    string lang = GameOptions.Language;
 
                     if (option.ValueList != null) {
                         txt += $": {option.ValueList[option.SelectedValue]}";
                     }
 
                     Vector2 size = Assets.DefaultFont.MeasureString(txt);
-                    game.spriteBatch.DrawString(Assets.DefaultFont,txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f, GameOptions.ScreenHeight * 0.5f + size.Y * off) + positionOffset, selected ? Color.Yellow : Color.Black);
+                    game.spriteBatch.DrawString(Assets.DefaultFont,txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f, GameOptions.ScreenHeight * 0.5f + size.Y * off) + positionOffset, selected ? Color.Yellow : Color.Wheat, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1.0f);
+                    game.spriteBatch.DrawString(Assets.DefaultFont,txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f + 1, GameOptions.ScreenHeight * 0.5f + size.Y * off+ 1) + positionOffset, selected ? Color.Red : Color.Black, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
                     off++;
                 }
             }

@@ -20,7 +20,8 @@ namespace Learnpy.Content
         public static void Init()
         {
             string s = Directory.GetCurrentDirectory();
-            levelFileNames = Directory.GetFiles(s + @"\Content\Lessons", "*.txt");
+            levelFileNames = null;
+            levelFileNames = Directory.GetFiles(s + $@"\Content\{GameOptions.Language}\Lessons", "*.txt");
         }
 
         public static void Load(World world, int lvlId)

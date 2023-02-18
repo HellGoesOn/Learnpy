@@ -26,8 +26,16 @@ namespace Learnpy.Core
 
         internal GameState GameState;
 
+        internal RenderTarget2D RenderTarget;
+
+        internal int GameWidth = 1360, GameHeight = 768;
+
+        internal Vector2 Size => new Vector2(GameWidth, GameHeight);
+
         internal LearnGame()
         {
+            GameOptions.Load();
+            Locale.Fill();
 			this.IsMouseVisible = true;
             gdm = new GraphicsDeviceManager(this);
         }
@@ -35,7 +43,7 @@ namespace Learnpy.Core
 		protected override void Initialize()
         {
             base.Initialize();
-
+            RenderTarget = new RenderTarget2D(gdm.GraphicsDevice, 1360, 768);
             gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
@@ -53,19 +61,46 @@ namespace Learnpy.Core
             MainMenu.AddSystem<MenuSystem>();
             MainMenu.AddCollection<MenuComponent>();
             MainMenu.AddCollection<TransformComponent>();
+
             var mainMenu = MainMenu.Create();
+            var startOption = new MenuOption("start", () =>
+            {
+            });
+            startOption.Action = () =>
+            {
+                if (GameOptions.Language == "error") {
+                    mainMenu.GetComponent<MenuComponent>().Options[0].Name = "err";
+                    return;
+                }
+
+                mainMenu.GetComponent<MenuComponent>().Options[0].Name = "start";
+                GameState = GameState.Playground;
+            };
             mainMenu.AddComponent(new TransformComponent());
             mainMenu.AddComponent(new MenuComponent
-                (new MenuOption("Start", () =>
-               {
-                   GameState = GameState.Playground;
-               }),
-                new MenuOption("Options", () =>
+                (startOption,
+                new MenuOption("options", () =>
                 {
                     mainMenu.GetComponent<MenuComponent>().IsSelected = false;
-                    mainMenu.GetComponent<TransformComponent>().Position = new Vector2(-150, 0);
+                    mainMenu.GetComponent<TransformComponent>().Position = new Vector2(-300, 0);
+                    mainMenu.GetComponent<MenuComponent>().Options[0].Name = "start";
                     var options = MainMenu.Create();
-                var resolution = new MenuOption("Resolution", () =>
+
+                    var language = new MenuOption("language", () => 
+                    {
+                        var cmp = options.GetComponent<MenuComponent>();
+                        var val = cmp.Options[cmp.SelectedIndex].Value;
+                        GameOptions.Language = val.ToString();
+                        Locale.Fill();
+                        SentenceFromText.Init();
+                        SentenceFromText.Load(MainWorld, 0);
+                    }, true);
+                    language.ValueList.Add("ru");
+                    language.ValueList.Add("en");
+                    language.ValueList.Add("error");
+
+
+                    var resolution = new MenuOption("resolution", () =>
                 {
                 }, true);
                     GameOptions.Resolutions.ForEach(x => resolution.ValueList.Add(x));
@@ -81,8 +116,8 @@ namespace Learnpy.Core
                         GameOptions.ScreenHeight = height;
                         GameOptions.NeedsUpdate = true;
                     };
-                    options.AddComponent(new MenuComponent(resolution,
-                        new MenuOption("Back", () => 
+                    options.AddComponent(new MenuComponent(resolution, language,
+                        new MenuOption("back", () => 
                         {
                             MainMenu.Destroy(options.Id);
                             mainMenu.GetComponent<MenuComponent>().IsSelected = true;
@@ -90,7 +125,7 @@ namespace Learnpy.Core
                         })) { IsSelected = true }
                         );
                 }),
-                new MenuOption("Quit", () =>
+                new MenuOption("exit", () =>
                 {
                     this.Exit();
                 })) {
@@ -121,7 +156,6 @@ namespace Learnpy.Core
 
         internal void ResetWorld()
         {
-
             foreach (Entity entity in MainWorld.Entities)
             {
                 if(entity.BelongsTo == null) 
@@ -130,10 +164,7 @@ namespace Learnpy.Core
                 MainWorld.Destroy(entity.Id);
             }
 
-            Random rand = new Random();
-
-            for (int i = 0; i < 13; i++)
-            {
+            for (int i = 0; i < 13; i++) {
                 var e = MainWorld.Create();
                 var pos = new Vector2(0, 56 * i);
                 e.AddComponent(new TransformComponent(pos));
@@ -160,6 +191,7 @@ namespace Learnpy.Core
 		{
 			base.UnloadContent();
 			Assets.Unload();
+            GameOptions.Save();
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -190,12 +222,17 @@ namespace Learnpy.Core
 
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.CornflowerBlue);
 			base.Draw(gameTime);
 
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+            GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.Clear(Color.DarkSeaGreen);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 			Worlds[GameState].Draw(this);
 			spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+            spriteBatch.Draw(RenderTarget, new Rectangle(0, 0, GameOptions.ScreenWidth, GameOptions.ScreenHeight), Color.White);
+            spriteBatch.End();
 		}
 	}
 }

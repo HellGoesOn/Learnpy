@@ -1,0 +1,8 @@
+start=Start;
+options=Options;
+resolution=Resolution;
+exit=Exit;
+language=Language;
+back=Back;
+time=Time;
+success=Success!;

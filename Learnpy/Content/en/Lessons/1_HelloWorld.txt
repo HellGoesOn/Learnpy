@@ -1,0 +1,7 @@
+Task:
+Welcome yourself to the world of programming!
+Its easy: first, let's print out 'Hello World!'.
+Python has a 'print(statement)' function just for that.
+Put puzzle pieces into correct order and Q, to test your code
+♪
+print(♪'Hello World!'♪)

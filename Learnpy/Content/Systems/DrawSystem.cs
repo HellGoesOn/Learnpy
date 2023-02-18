@@ -33,20 +33,6 @@ namespace Learnpy.Content.Systems
                 gameRenderer.spriteBatch.Draw(texture, transform.Position, rect, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
                 var origin = Assets.DefaultFontSmall.MeasureString(finalText);
                 gameRenderer.spriteBatch.DrawString(Assets.DefaultFontSmall, finalText, transform.Position + new Vector2(64, 32), Color.Purple, 0f, origin * 0.5f, Vector2.One, SpriteEffects.None, 1f);
-
-                /*
-                if(Collision.BoundingBox(e.GetComponent<BoxComponent>().Box, Input.MouseBox).Overlapped)
-                {
-                    string theWholeDeal = $"Type: {puzzle.PieceType}" +
-                        $"\nCanConnect: {puzzle.CanConnect}" +
-                        $"\nCanBeConnectedTo: {puzzle.CanBeConnectedTo}" +
-                        $"\nConnectedTo: {puzzle.ConnectedTo}" +
-                        $"\nConnectionTo: {puzzle.ConnectionTo}" +
-                        $"\nMoveable: {e.HasComponent<MoveableComponent>()}";
-
-                    gameRenderer.spriteBatch.DrawString(Assets.DefaultFont, theWholeDeal, Input.MouseBox.Centre + new Vector2(0, 16), Color.BlanchedAlmond, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1);
-                    gameRenderer.spriteBatch.DrawString(Assets.DefaultFont, theWholeDeal, Input.MouseBox.Centre + new Vector2(1, 17), Color.Black, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.999f);
-                }*/
             }
         }
     }

@@ -85,7 +85,7 @@ namespace Learnpy.Content.Systems
 
         public void Render(LearnGame gameRenderer)
         {
-            string curTxt = "Текущий код выглядит так: \n\n\n" + CurrentSentence;
+            string curTxt = "«Python»: \n\n\n" + CurrentSentence;
             if (!string.IsNullOrEmpty(CurrentSentence))
             {
                 Vector2 size = Assets.DefaultFont.MeasureString(curTxt) + new Vector2(10);

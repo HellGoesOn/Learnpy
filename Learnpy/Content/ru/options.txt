@@ -1,0 +1,8 @@
+start=Начать;
+options=Настройки;
+resolution=Разрешение экрана;
+exit=Выход;
+language=Язык;
+back=Назад;
+time=Время;
+success=Успех!;

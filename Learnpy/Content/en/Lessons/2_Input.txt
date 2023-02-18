@@ -1,0 +1,8 @@
+Task:
+In programming, you often need to read user input,
+as well as using different variables.
+You can assign variable its value by using '=' operator
+To read user input, you can use input() function
+But to make sure we are reading a number, use 'int(statement)'
+♪
+a =♪ int(♪input()♪)
