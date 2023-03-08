@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Linq;
 using static Learnpy.Collision;
 
 namespace Learnpy
 {
-    public class Input
+    public partial class Input
     {
         static MouseState _oldMBState;
         static Vector2 _oldPos;

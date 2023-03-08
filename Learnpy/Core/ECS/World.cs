@@ -77,6 +77,9 @@ namespace Learnpy.Core.ECS
         public void AddComponent<T>(int entityId, T component)
             where T : struct
         {
+            if (!HasComponentCollection<T>())
+                return;
+
             Type componentType = component.GetType();
 
             ComponentCollection<T> s = Components[componentType] as ComponentCollection<T>;
@@ -87,11 +90,17 @@ namespace Learnpy.Core.ECS
         public void RemoveComponent<T>(int entityId, T component)
             where T: struct
         {
+            if (!HasComponentCollection<T>())
+                return;
+
             Components[component.GetType()].RemoveComponent(entityId);
         }
 
         public void RemoveComponent<T>(int entityId) where T : struct
         {
+            if (!HasComponentCollection<T>())
+                return;
+
             Components[typeof(T)].RemoveComponent(entityId);
         }
 
@@ -106,6 +115,8 @@ namespace Learnpy.Core.ECS
 
             return (T)Systems.Find(x => x.GetType() == typeof(T));
         }
+
+        public bool HasComponentCollection<T>() where T : struct => Components.ContainsKey(typeof(T));
 
         public void AddCollection<T>() where T : struct
         {

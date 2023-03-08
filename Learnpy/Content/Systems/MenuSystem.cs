@@ -1,9 +1,11 @@
 ﻿using Learnpy.Content.Components;
 using Learnpy.Core;
+using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SDL2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +17,11 @@ namespace Learnpy.Content.Systems
         public void Execute(World gameState)
         {
             List<Action> actionsToInvoke = new List<Action>();
-            foreach (int e in gameState.EntitiesById) {
-                var entity = gameState.Entities[e];
-                ref var menu = ref entity.GetComponent<MenuComponent>();
+            foreach (Entity e in gameState.ActiveEntities.Where(x => x.HasComponent<MenuComponent>())) {
+                ref var menu = ref e.GetComponent<MenuComponent>();
 
                 ref var opt = ref menu.Options[menu.SelectedIndex];
-                if (!menu.IsSelected)
+                if (!menu.IsSelected || SDL.SDL_IsTextInputActive() == SDL.SDL_bool.SDL_TRUE)
                     continue;
 
                 if(Input.PressedKey(Keys.S) || Input.PressedKey(Keys.Down)) {
@@ -82,9 +83,11 @@ namespace Learnpy.Content.Systems
                         txt += $": {option.ValueList[option.SelectedValue]}";
                     }
 
+                    float opacity = e.HasComponent<OpacityComponent>() ? e.GetComponent<OpacityComponent>().CurrentValue : 1.0f;
+
                     Vector2 size = Assets.DefaultFont.MeasureString(txt);
-                    game.spriteBatch.DrawString(Assets.DefaultFont,txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f, GameOptions.ScreenHeight * 0.5f + size.Y * off) + positionOffset, selected ? Color.Yellow : Color.Wheat, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1.0f);
-                    game.spriteBatch.DrawString(Assets.DefaultFont,txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f + 1, GameOptions.ScreenHeight * 0.5f + size.Y * off+ 1) + positionOffset, selected ? Color.Red : Color.Black, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+                    Renderer.DrawText(txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f + 1, GameOptions.ScreenHeight * 0.5f + size.Y * off + 1) + positionOffset, Assets.DefaultFont, (selected ? Color.Red : Color.Black) * opacity, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
+                    Renderer.DrawText(txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f, GameOptions.ScreenHeight * 0.5f + size.Y * off) + positionOffset, Assets.DefaultFont, (selected ? Color.Yellow : Color.Wheat) * opacity, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
                     off++;
                 }
             }

@@ -6,10 +6,12 @@ namespace Learnpy.Content.Components
     public struct TransformComponent
     {
         public Vector2 Position;
+        public float Rotation;
 
-        public TransformComponent(Vector2 position)
+        public TransformComponent(Vector2 position, float rotation = 0f)
         {
             Position = position;
+            Rotation = rotation;
         }
     }
 }

@@ -38,7 +38,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
@@ -63,12 +63,17 @@
     <Compile Include="Assets.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Content\Components\BoxComponent.cs" />
+    <Compile Include="Content\Components\ChangeTintComponent.cs" />
     <Compile Include="Content\Components\DragComponent.cs" />
+    <Compile Include="Content\Components\DrawDataComponent.cs" />
+    <Compile Include="Content\Components\OpacityComponent.cs" />
     <Compile Include="Content\Components\MenuComponent.cs" />
     <Compile Include="Content\Components\MoveableComponent.cs" />
     <Compile Include="Content\Components\PuzzleComponent.cs" />
+    <Compile Include="Content\Components\SpinComponent.cs" />
     <Compile Include="Content\Components\TextureComponent.cs" />
     <Compile Include="Content\Components\TransformComponent.cs" />
+    <Compile Include="Content\Components\VelocityComponent.cs" />
     <Compile Include="Content\Enums.cs" />
     <Compile Include="Content\SentenceFromText.cs" />
     <Compile Include="Content\Systems\CollisionSystem.cs" />
@@ -79,13 +84,17 @@
     <Compile Include="Content\Systems\MenuSystem.cs" />
     <Compile Include="Content\Systems\ReadOrderSystem.cs" />
     <Compile Include="Content\Systems\RunCodeSystem.cs" />
+    <Compile Include="Content\Systems\VelocitySystem.cs" />
     <Compile Include="Core\ECS\Archetype.cs" />
     <Compile Include="Core\ECS\ComponentCollection.cs" />
     <Compile Include="Core\ECS\Entity.cs" />
     <Compile Include="Core\ECS\ISystem.cs" />
     <Compile Include="Core\ECS\World.cs" />
+    <Compile Include="Core\Extensions\Vector2Extensions.cs" />
     <Compile Include="Core\Globals.cs" />
     <Compile Include="Core\LearnGame.cs" />
+    <Compile Include="Core\LearnGame.MainMenu.cs" />
+    <Compile Include="Core\Drawing\Renderer.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="GameOptions.cs" />
     <Compile Include="Input.cs" />
@@ -93,13 +102,16 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Art\Bullet.png" />
+    <Content Include="Assets\Art\Drum.png" />
+    <Content Include="Assets\Art\MC.png" />
     <Content Include="Content\en\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\ru\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-	<Content Include="Content\error\**">
+    <Content Include="Content\error\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

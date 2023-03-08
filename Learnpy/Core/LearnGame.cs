@@ -1,6 +1,7 @@
 ﻿using Learnpy.Content;
 using Learnpy.Content.Components;
 using Learnpy.Content.Systems;
+using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,7 +13,7 @@ using static Learnpy.Collision;
 
 namespace Learnpy.Core
 {
-    public class LearnGame : Game
+    public partial class LearnGame : Game
     {
         internal World MainMenu;
 
@@ -43,7 +44,7 @@ namespace Learnpy.Core
 		protected override void Initialize()
         {
             base.Initialize();
-            RenderTarget = new RenderTarget2D(gdm.GraphicsDevice, 1360, 768);
+            Renderer.Target = new RenderTarget2D(gdm.GraphicsDevice, 1360, 768);
             gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
@@ -58,79 +59,7 @@ namespace Learnpy.Core
 
             // init main menu
 
-            MainMenu.AddSystem<MenuSystem>();
-            MainMenu.AddCollection<MenuComponent>();
-            MainMenu.AddCollection<TransformComponent>();
-
-            var mainMenu = MainMenu.Create();
-            var startOption = new MenuOption("start", () =>
-            {
-            });
-            startOption.Action = () =>
-            {
-                if (GameOptions.Language == "error") {
-                    mainMenu.GetComponent<MenuComponent>().Options[0].Name = "err";
-                    return;
-                }
-
-                mainMenu.GetComponent<MenuComponent>().Options[0].Name = "start";
-                GameState = GameState.Playground;
-            };
-            mainMenu.AddComponent(new TransformComponent());
-            mainMenu.AddComponent(new MenuComponent
-                (startOption,
-                new MenuOption("options", () =>
-                {
-                    mainMenu.GetComponent<MenuComponent>().IsSelected = false;
-                    mainMenu.GetComponent<TransformComponent>().Position = new Vector2(-300, 0);
-                    mainMenu.GetComponent<MenuComponent>().Options[0].Name = "start";
-                    var options = MainMenu.Create();
-
-                    var language = new MenuOption("language", () => 
-                    {
-                        var cmp = options.GetComponent<MenuComponent>();
-                        var val = cmp.Options[cmp.SelectedIndex].Value;
-                        GameOptions.Language = val.ToString();
-                        Locale.Fill();
-                        SentenceFromText.Init();
-                        SentenceFromText.Load(MainWorld, 0);
-                    }, true);
-                    language.ValueList.Add("ru");
-                    language.ValueList.Add("en");
-                    language.ValueList.Add("error");
-
-
-                    var resolution = new MenuOption("resolution", () =>
-                {
-                }, true);
-                    GameOptions.Resolutions.ForEach(x => resolution.ValueList.Add(x));
-                    resolution.Action = () =>
-                    {
-                        var cmp = options.GetComponent<MenuComponent>();
-                        var val = cmp.Options[cmp.SelectedIndex].Value;
-                        var wd = Regex.Match(val.ToString(), "^.*(?=x)").Value;
-                        int width = int.Parse(wd);
-                        var h = Regex.Match(val.ToString(), "(?<=x).*").Value;
-                        int height = int.Parse(h);
-                        GameOptions.ScreenWidth = width;
-                        GameOptions.ScreenHeight = height;
-                        GameOptions.NeedsUpdate = true;
-                    };
-                    options.AddComponent(new MenuComponent(resolution, language,
-                        new MenuOption("back", () => 
-                        {
-                            MainMenu.Destroy(options.Id);
-                            mainMenu.GetComponent<MenuComponent>().IsSelected = true;
-                            mainMenu.GetComponent<TransformComponent>().Position = new Vector2(0, 0);
-                        })) { IsSelected = true }
-                        );
-                }),
-                new MenuOption("exit", () =>
-                {
-                    this.Exit();
-                })) {
-                IsSelected = true
-            });
+            InitializeMainMenu();
 
 
             // init main playground
@@ -205,14 +134,13 @@ namespace Learnpy.Core
                 GameOptions.NeedsUpdate = false;
             }
 
+            if (dies && --deathTime <= 0)
+                this.Exit();
+
             if (GameState == GameState.Playground && Input.PressedKey(Keys.C))
             {
                 ResetWorld();
                 SentenceFromText.Load(MainWorld, MainWorld.GetSystem<CompletionSystem>().LevelTarget-1);
-            }
-
-            if(Input.PressedKey(Keys.D1)) {
-                GameState = GameState.Playground;
             }
 
 			Worlds[GameState].Update();
@@ -224,14 +152,14 @@ namespace Learnpy.Core
 		{
 			base.Draw(gameTime);
 
-            GraphicsDevice.SetRenderTarget(RenderTarget);
+            GraphicsDevice.SetRenderTarget(Renderer.Target);
             GraphicsDevice.Clear(Color.DarkSeaGreen);
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 			Worlds[GameState].Draw(this);
 			spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
-            spriteBatch.Draw(RenderTarget, new Rectangle(0, 0, GameOptions.ScreenWidth, GameOptions.ScreenHeight), Color.White);
+            spriteBatch.Draw(Renderer.Target, new Rectangle(0, 0, GameOptions.ScreenWidth, GameOptions.ScreenHeight), Color.White);
             spriteBatch.End();
 		}
 	}

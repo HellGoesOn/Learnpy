@@ -1,4 +1,5 @@
 ﻿using Learnpy.Core.ECS;
+using Microsoft.Xna.Framework;
 
 namespace Learnpy.Content.Components
 {
