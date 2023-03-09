@@ -55,7 +55,7 @@ namespace Learnpy
             }
 
             var fontDefault = TtfFontBaker.Bake(File.ReadAllBytes("Assets/Fonts/DefFont.ttf"),
-                20,
+                24,
                 1024,
                 1024,
                 new[]

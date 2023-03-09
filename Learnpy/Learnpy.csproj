@@ -48,7 +48,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
@@ -83,7 +83,6 @@
     <Compile Include="Content\Scenes\SceneManager.cs" />
     <Compile Include="Content\Scenes\Transitions\FadeToBlack.cs" />
     <Compile Include="Content\Scenes\Transitions\ISceneTransition.cs" />
-    <Compile Include="Content\Scenes\Transitions\Slide.cs" />
     <Compile Include="Content\SentenceFromText.cs" />
     <Compile Include="Content\Systems\CodeTypingSystem.cs" />
     <Compile Include="Content\Systems\CollisionSystem.cs" />
@@ -119,8 +118,6 @@
     <Content Include="Assets\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Audio\Music\MainTheme.ogg" />
-    <Content Include="Content\en\monologue.txt" />
     <Content Include="Content\ru\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

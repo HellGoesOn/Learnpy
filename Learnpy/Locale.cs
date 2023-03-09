@@ -39,11 +39,11 @@ namespace Learnpy
 
                 string fileText = File.ReadAllText($@"{Directory.GetCurrentDirectory()}\Content\{GameOptions.Language}\{source}");
 
-                string[] lines = fileText.Split(';');
+                string[] lines = fileText.Replace("\r\n", "").Split(';');
                 foreach (string line in lines) {
                     Match match = Regex.Match(line, "(?<=" + key +"=).*");
                     if (match.Success)
-                        return match.Value;
+                        return match.Value.Replace("<br>", Environment.NewLine);
                 }
                 return "???";
             }

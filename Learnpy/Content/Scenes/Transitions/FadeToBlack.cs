@@ -18,6 +18,8 @@ namespace Learnpy.Content.Scenes.Transitions
         public GameState CurrentScene;
 
         public Color Color { get; set; }
+        public Action TransitionDone { get; set; }
+        public Action SceneChange { get; set; }
 
         private bool flip;
 
@@ -64,6 +66,21 @@ namespace Learnpy.Content.Scenes.Transitions
                     finished = true;
                 }
             }
+        }
+
+        public Action OnTransitionEnd()
+        {
+            return TransitionDone;
+        }
+
+        public bool SceneChanged()
+        {
+            return flip;
+        }
+
+        public Action OnSceneChanged()
+        {
+            return SceneChange;
         }
     }
 }

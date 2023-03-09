@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Learnpy.Content.Components
@@ -18,9 +19,11 @@ namespace Learnpy.Content.Components
         public bool AutoScroll { get; set; }
         public Color Color { get; set; }
         public Action OnDialogueEnd { get; set; }
+        public SpriteFont Font { get; set; }
 
         public DialogueComponent(string[] pages)
         {
+            Font = Assets.DefaultFont;
             OnDialogueEnd = null;
             TimeUntilNextPage = TimeUntilNextPageMax = 0;
             AutoScroll = false;

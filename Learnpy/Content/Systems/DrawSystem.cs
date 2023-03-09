@@ -4,6 +4,7 @@ using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Learnpy.Content.Systems
         public void Execute(World gameState)
         {
             IEnumerable<Entity> w = gameState.ActiveEntities.Where(x => x.Has<TransformComponent>());
+            List<Action> actionQueue = new List<Action>();
             foreach (Entity e in w) {
                 bool hasDrawData = e.Has<DrawDataComponent>();
                 ref var transform = ref e.Get<TransformComponent>();
@@ -34,8 +36,20 @@ namespace Learnpy.Content.Systems
 
                     drawData.Tint = Color.Lerp(drawData.Tint, tintChange.TargetTint, tintChange.Amount);
                 }
+                if(e.Has<AnimationComponent>()) {
+                    AnimationComponent c = e.Get<AnimationComponent>();
+                    c.Action?.Invoke();
+
+                    if (c.OnEndAction != null)
+                        actionQueue.Add(c.OnEndAction);
+                }
             }
 
+            foreach (Action action in actionQueue) {
+                action.Invoke();
+            }
+
+            actionQueue.Clear();
         }
 
         public void Render(LearnGame gameRenderer)
@@ -68,23 +82,27 @@ namespace Learnpy.Content.Systems
                 Vector2 scale = Vector2.One;
                 Vector2 origin = Vector2.Zero;
                 Color clr = Color.White;
+                SpriteEffects sfx = SpriteEffects.None;
                 if (e.Has<DrawDataComponent>()) {
                     DrawDataComponent drawData = e.Get<DrawDataComponent>();
                     scale = drawData.Scale;
                     origin = drawData.Origin;
                     clr = drawData.Tint;
+                    sfx = drawData.SpriteEffects;
                 }
                 Rectangle? frame = null;
 
                 if (e.Has<AnimationComponent>()) {
                     AnimationComponent animation = e.Get<AnimationComponent>();
-                    frame = animation.Frames[animation.CurrentFrame];
+
+                    if(animation.Frames != null && animation.Frames.Length > 0)
+                        frame = animation.Frames[animation.CurrentFrame];
                 }
 
                 float opacity = e.Has<OpacityComponent>() ? e.Get<OpacityComponent>().CurrentValue : 1.0f;
                 float rot = transform.Rotation;
 
-                Renderer.Draw(texture, transform.Position, frame, clr * opacity, rot, origin, scale, SpriteEffects.None);
+                Renderer.Draw(texture, transform.Position, frame, clr * opacity, rot, origin, scale, sfx);
             }
         }
     }

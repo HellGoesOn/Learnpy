@@ -1,8 +1,8 @@
 mysteries=Our world is full of all kinds of mysteries...;
 shadow=Shadow goverment....;
-taxes=The way the taxes are calculated....;
-important=But for the majority, the biggest mystery of them all....;
+taxes=Do Twitter users have brains....;
+important=But for the majority,<br> the biggest mystery of them all....;
 is=...is...;
-bruh=...how the hell are you supposed to learn how to code in ­«Python»?;
+bruh=...how the hell are you <br>supposed to learn <br>how to code in ­«Python»?;
 ucant=You can't, just give up;
 try=You definitely can and you will show just how!;

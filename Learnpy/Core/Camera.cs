@@ -31,7 +31,8 @@ namespace Learnpy.Core
                 * Matrix.CreateTranslation(-centre.X, -centre.Y, 0)
                 *Matrix.CreateRotationZ(rotation)
                 * Matrix.CreateTranslation(new Vector3(view.Width * 0.5f, view.Height * 0.5f, 0f));
-
+            /*
+#if DEBUG
             if (Input.HeldKey(Keys.NumPad4))
                 centre.X -= speed;
             if (Input.HeldKey(Keys.NumPad6))
@@ -51,6 +52,7 @@ namespace Learnpy.Core
 
             if (zoom < 0.1f)
                 zoom = 0.1f;
+#endif*/
         }
 
         public Vector2 Position => centre - new Vector2(view.Width, view.Height) * 0.5f;

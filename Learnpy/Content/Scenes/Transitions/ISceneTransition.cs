@@ -1,4 +1,5 @@
 ﻿using Learnpy.Content.Scenes;
+using System;
 
 namespace Learnpy.Content.Scenes.Transitions
 {
@@ -7,5 +8,8 @@ namespace Learnpy.Content.Scenes.Transitions
         public void Draw(LearnGame game);
         public void Update(LearnGame game);
         public bool IsFinished();
+        public bool SceneChanged();
+        public Action OnTransitionEnd();
+        public Action OnSceneChanged();
     }
 }

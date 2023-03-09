@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace Learnpy.Content.Components
@@ -11,9 +12,12 @@ namespace Learnpy.Content.Components
 
         public bool IsSelected { get; set; }
 
+        public SpriteFont Font { get; set; }
+
         public MenuComponent(params MenuOption[] options)
         {
             IsSelected = false;
+            Font = Assets.DefaultFont;
             SelectedIndex = 0;
             Options = options;
             for (int i = 0; i < Options.Length; i++)

@@ -8,12 +8,16 @@ using Learnpy.Core.ECS;
 using Learnpy.Core.Extensions;
 using Learnpy.Content.Scenes.Transitions;
 using Learnpy.Core;
+using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Learnpy.Content.Scenes
 {
     public partial class LearnGame
     {
         private List<Entity> bullets = new List<Entity>();
+
+        private float time;
 
         public void InitializeMainMenu()
         {
@@ -30,8 +34,28 @@ namespace Learnpy.Content.Scenes
             var backdrop = MainMenu.Create();
             backdrop.Add(new TextureComponent("Pixel"));
             backdrop.Add(new TransformComponent(new Vector2(0)));
-            backdrop.Add(new DrawDataComponent(new Vector2(0, 0), new Vector2(1360, 768), 1, Color.DarkRed));
+            backdrop.Add(new DrawDataComponent(new Vector2(0, 0), new Vector2(1360, 768), 1, new Color(0.463f, 0.11f, 0.11f)));
 
+
+            var backdrop2 = MainMenu.Create();
+            backdrop2.Add(new TextureComponent("Pixel"));
+            backdrop2.Add(new TransformComponent(new Vector2(0, 368)));
+            backdrop2.Add(new DrawDataComponent(new Vector2(0, 0), new Vector2(1360, 400), 1, new Color(0.212f, 0.086f, 0.129f)));
+            backdrop2.Add(new OpacityComponent(-1.75f, 1.1f, 0.1f));
+
+            var logo = MainMenu.Create();
+            logo.Add(new TransformComponent(680, 294));
+            logo.Add(new TextureComponent("1662"));
+            logo.Add(new DrawDataComponent(new Vector2(79, 28), new Vector2(3), 1f, Color.White) { SpriteEffects = SpriteEffects.FlipHorizontally});
+            logo.Add(new OpacityComponent(-1.75f, 1.1f, 0.1f));
+            logo.Add(new AnimationComponent() {
+                Action = () =>
+                {
+                    ref var pos = ref logo.Get<TransformComponent>();
+                    pos.Position += new Vector2(0, (float)Math.Sin(time) * 0.5f);
+                    time += 0.35f;
+                }
+            });
 
             float spinSpeed = 0.002f;
             var spinningDrum = MainMenu.Create();
@@ -91,13 +115,13 @@ namespace Learnpy.Content.Scenes
                 mainMenu.Add(new OpacityComponent(1f, 0.0f, 0.15f));
                 mainMenu.Get<MenuComponent>().IsSelected = false;
             };
-            mainMenu.Add(new TransformComponent(new Vector2(680, 384)));
+            mainMenu.Add(new TransformComponent(new Vector2(680, 404)));
             mainMenu.Add(new MenuComponent
                 (startOption,
                 new MenuOption("options", () =>
                 {
                     mainMenu.Get<MenuComponent>().IsSelected = false;
-                    mainMenu.Get<TransformComponent>().Position -= new Vector2(300, 0);
+                    mainMenu.Get<TransformComponent>().Position -= new Vector2(500, 0);
                     mainMenu.Get<MenuComponent>().Options[0].Name = "start";
                     var options = MainMenu.Create();
                     options.Add(new TransformComponent(new Vector2(680, 384)));
@@ -153,8 +177,8 @@ namespace Learnpy.Content.Scenes
                         {
                             MainMenu.Destroy(options.Id);
                             mainMenu.Get<MenuComponent>().IsSelected = true;
-                            mainMenu.Get<TransformComponent>().Position += new Vector2(300, 0);
-                        })) { IsSelected = true }
+                            mainMenu.Get<TransformComponent>().Position += new Vector2(500, 0);
+                        })) { IsSelected = true, Font = Assets.DefaultFontBig }
                         );
                 }),
                 new MenuOption("exit", () =>
@@ -169,8 +193,10 @@ namespace Learnpy.Content.Scenes
 
                     this.Exit();
                 })) {
-                IsSelected = true
+                IsSelected = true,
+                Font = Assets.DefaultFontBig
             });
+
         }
     }
 }

@@ -68,16 +68,17 @@ namespace Learnpy.Content.Systems
                 var pos = e.Get<TransformComponent>();
                 var text = e.Get<DialogueComponent>();
 
+                SpriteFont font = text.Font;
                 float opacity = e.Has<OpacityComponent>() ? e.Get<OpacityComponent>().CurrentValue : 1f;
 
                 string txt = text.Pages[text.CurrentPage].Substring(0, text.DisplayedLetters);
                 float rotation = pos.Rotation;
-                Vector2 origin = text.CenteredOrigin ? Assets.DefaultFont.MeasureString(txt) * 0.5f : Vector2.Zero;
+                Vector2 origin = text.CenteredOrigin ? font.MeasureString(txt) * 0.5f : Vector2.Zero;
 
                 Renderer.RequestScreenDraw(() =>
                 {
-                    Renderer.DrawText(txt, pos.Position + Vector2.One, Assets.DefaultFont, Color.Black * opacity, rotation, Vector2.One, origin, SpriteEffects.None);
-                    Renderer.DrawText(txt, pos.Position, Assets.DefaultFont, text.Color * opacity, rotation, Vector2.One, origin, SpriteEffects.None);
+                    Renderer.DrawText(txt, pos.Position + Vector2.One, font, Color.Black * opacity, rotation, Vector2.One, origin, SpriteEffects.None);
+                    Renderer.DrawText(txt, pos.Position, font, text.Color * opacity, rotation, Vector2.One, origin, SpriteEffects.None);
                 });
             }
         }

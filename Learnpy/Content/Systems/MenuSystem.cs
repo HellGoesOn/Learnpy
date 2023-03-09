@@ -84,20 +84,20 @@ namespace Learnpy.Content.Systems
                     bool selected = comp.SelectedIndex == option.Index;
                     string txt = Locale.GetTranslation(option.Name, option.LocalePath);
                     string lang = GameOptions.Language;
-
+                    SpriteFont font = comp.Font;
                     if (option.ValueList != null) {
                         txt += $": {option.ValueList[option.SelectedValue]}";
                     }
 
                     float opacity = e.Has<OpacityComponent>() ? e.Get<OpacityComponent>().CurrentValue : 1.0f;
 
-                    Vector2 size = Assets.DefaultFont.MeasureString(txt);
+                    Vector2 size = font.MeasureString(txt);
                     float rotation = selected ? sway / (txt.Length * 0.25f) : 0;
                     Renderer.RequestScreenDraw(() =>
                     {
                         off++;
-                        Renderer.DrawText(txt, positionOffset + Vector2.One + new Vector2(0, size.Y * off), Assets.DefaultFont, (selected ? Color.Red : Color.Black) * opacity, rotation, Vector2.One, size * 0.5f, SpriteEffects.None);
-                       Renderer.DrawText(txt, positionOffset + new Vector2(0, size.Y * off), Assets.DefaultFont, (selected ? Color.Yellow : Color.Wheat) * opacity, rotation, Vector2.One, size * 0.5f, SpriteEffects.None);
+                        Renderer.DrawText(txt, positionOffset + Vector2.One + new Vector2(0, size.Y * off), font, (selected ? Color.Red : Color.Black) * opacity, rotation, Vector2.One, size * 0.5f, SpriteEffects.None);
+                       Renderer.DrawText(txt, positionOffset + new Vector2(0, size.Y * off), font, (selected ? Color.Yellow : Color.Wheat) * opacity, rotation, Vector2.One, size * 0.5f, SpriteEffects.None);
                    }); 
                 }
             }

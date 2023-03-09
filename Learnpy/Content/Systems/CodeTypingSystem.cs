@@ -19,7 +19,7 @@ namespace Learnpy.Content.Systems
 
         public void Execute(World gameState)
         {
-            if (Input.PressedKey(Keys.Home)) {
+            if (Input.PressedKey(Keys.Delete)) {
                 isEditingText = !isEditingText;
 
                 if (isEditingText)
@@ -63,7 +63,7 @@ namespace Learnpy.Content.Systems
             string[] allLines = Input.editedString.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             int lineCountToCursor = lineUpToCursor.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Count();
 
-            string fullline = string.Join(Environment.NewLine, allLines, 0, (int)MathHelper.Max(0, lineCountToCursor-1));
+            string fullline = string.Join(Environment.NewLine, allLines, 0, (int)MathHelper.Max(0, lineCountToCursor - 1));
             int indexInLine = (int)MathHelper.Clamp(Input.textCursor - fullline.Length, 0, allLines[Math.Max(0, lineCountToCursor - 1)].Length);
 
             Texture2D pix = Assets.GetTexture("Pixel");
@@ -71,10 +71,12 @@ namespace Learnpy.Content.Systems
 
             float offX = constOff.X * indexInLine;
 
-
-            Renderer.Draw(pix, new Vector2(60 + offX, 60 + constOff.Y * Math.Max(1, lineCountToCursor)), new Rectangle(0, 0, 8, 2), Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None); 
-            Renderer.DrawText($"CursorPos:{Input.textCursor}; HeldTime: {heldTime}; LineLength{allLines[Math.Max(0, lineCountToCursor - 1)].Length}", new Vector2(60, 40), Assets.DefaultFont, Color.White, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
-            Renderer.DrawText(Input.editedString, new Vector2(60, 60), Assets.DefaultFont, Color.White, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
+            Renderer.RequestScreenDraw(() =>
+            {
+                Renderer.Draw(pix, new Vector2(60 + offX, 60 + constOff.Y * Math.Max(1, lineCountToCursor)), new Rectangle(0, 0, 8, 2), Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None);
+                Renderer.DrawText($"CursorPos:{Input.textCursor}; HeldTime: {heldTime}; LineLength{allLines[Math.Max(0, lineCountToCursor - 1)].Length}", new Vector2(60, 40), Assets.DefaultFont, Color.White, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
+                Renderer.DrawText(Input.editedString, new Vector2(60, 60), Assets.DefaultFont, Color.White, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
+            });
         }
     }
 }

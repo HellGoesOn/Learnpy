@@ -41,7 +41,7 @@ namespace Learnpy
                     editedString = editedString.Remove(textCursor, 1);
                 }
 
-            } else {
+            } else if(obj != (char)127){
                 editedString = editedString.Insert(textCursor, obj.ToString());
                 textCursor += obj.ToString().Length;
             }

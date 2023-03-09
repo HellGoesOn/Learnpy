@@ -151,6 +151,12 @@ namespace Learnpy.Content.Scenes
 
             foreach(ISceneTransition transition in sceneTransitions) {
                 transition.Update(this);
+
+                if (transition.SceneChanged())
+                    transition.OnSceneChanged()?.Invoke();
+
+                if (transition.IsFinished())
+                    transition.OnTransitionEnd()?.Invoke();
             }
 
 			Worlds[GameState].Update();

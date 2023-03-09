@@ -35,7 +35,7 @@ namespace Learnpy.Core.Drawing
         public static void DrawScene(World world, Camera camera, RenderTarget2D target)
         {
             game.GraphicsDevice.SetRenderTarget(target);
-            game.GraphicsDevice.Clear(Color.DarkSeaGreen);
+            game.GraphicsDevice.Clear(Color.BurlyWood);
             batch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.transform);
             world.Draw(EntryPoint.Instance);
             batch.End();
