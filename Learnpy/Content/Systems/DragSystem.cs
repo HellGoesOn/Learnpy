@@ -1,5 +1,5 @@
 ﻿using Learnpy.Content.Components;
-using Learnpy.Core;
+using Learnpy.Content.Scenes;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -18,26 +18,28 @@ namespace Learnpy.Content.Systems
             if (Input.PressedKey(Keys.H))
                 Show = !Show;
 
-            foreach (Entity entity in gameState.ActiveEntities.Where(x => x.HasComponent<PuzzleComponent>() && x.HasComponent<MoveableComponent>() && x.HasComponent<DragComponent>()))
+            MouseResult mouse = Input.ScreenToWorldSpace(gameState);
+
+            foreach (Entity entity in gameState.ActiveEntities.Where(x => x.Has<PuzzleComponent>() && x.Has<MoveableComponent>() && x.Has<DragComponent>()))
             {
-                ref var puzzle = ref entity.GetComponent<PuzzleComponent>();
-                var entityBox = entity.GetComponent<BoxComponent>();
-                ref var oldPos = ref entity.GetComponent<TransformComponent>();
-                ref DragComponent drag = ref entity.GetComponent<DragComponent>();
+                ref var puzzle = ref entity.Get<PuzzleComponent>();
+                var entityBox = entity.Get<BoxComponent>();
+                ref var oldPos = ref entity.Get<TransformComponent>();
+                ref DragComponent drag = ref entity.Get<DragComponent>();
 
                 if (drag.Active)
                 {
-                    oldPos.Position = Input.MousePos - drag.DragOffset - entityBox.Box.Halfwidths;
+                    oldPos.Position = mouse.Position - drag.DragOffset - entityBox.Box.Halfwidths;
                 }
 
-                if (Input.LMBClicked && BoundingBox(entityBox.Box, Input.MouseBox).Overlapped)
+                if (Input.LMBClicked && BoundingBox(entityBox.Box, mouse.Bounds).Overlapped)
                 {
                     if(puzzle.ConnectedTo != -1)
                     {
                         var otherEntity = gameState.Entities[puzzle.ConnectedTo];
-                        BoxComponent otherBox = otherEntity.GetComponent<BoxComponent>();
-                        ref var puz = ref otherEntity.GetComponent<PuzzleComponent>();
-                        ref var otherDraggalbe = ref otherEntity.GetComponent<DragComponent>();
+                        BoxComponent otherBox = otherEntity.Get<BoxComponent>();
+                        ref var puz = ref otherEntity.Get<PuzzleComponent>();
+                        ref var otherDraggalbe = ref otherEntity.Get<DragComponent>();
 
                         puz.ConnectionTo = -1;
                         puz.CanBeConnectedTo = true;
@@ -49,11 +51,11 @@ namespace Learnpy.Content.Systems
                         while (connect != -1)
                         {
                             var otherEntity = gameState.Entities[connect];
-                            BoxComponent otherBox = otherEntity.GetComponent<BoxComponent>();
-                            ref var puz = ref otherEntity.GetComponent<PuzzleComponent>();
-                            ref var otherDraggalbe = ref otherEntity.GetComponent<DragComponent>();
+                            BoxComponent otherBox = otherEntity.Get<BoxComponent>();
+                            ref var puz = ref otherEntity.Get<PuzzleComponent>();
+                            ref var otherDraggalbe = ref otherEntity.Get<DragComponent>();
                             otherDraggalbe.Active = true;
-                            otherDraggalbe.DragOffset = Input.MousePos - otherBox.Box.Centre;
+                            otherDraggalbe.DragOffset = Input.ScaledMousePos - otherBox.Box.Centre;
 
                             connect = puz.ConnectionTo;
                         }
@@ -66,7 +68,7 @@ namespace Learnpy.Content.Systems
                     puzzle.ConnectedTo = -1;
 
                     drag.Active = true;
-                    drag.DragOffset = Input.MousePos - entityBox.Box.Centre;
+                    drag.DragOffset = mouse.Position - entityBox.Box.Centre;
 
                 }
 
@@ -83,7 +85,7 @@ namespace Learnpy.Content.Systems
             foreach (int e in gameRenderer.MainWorld.EntitiesById)
             {
                 var entity = gameRenderer.MainWorld.Entities[e];
-                var entityBox = entity.GetComponent<BoxComponent>().Box;
+                var entityBox = entity.Get<BoxComponent>().Box;
                 Util.DrawRectangle(gameRenderer.spriteBatch, entityBox.Centre - entityBox.Halfwidths, entityBox.Halfwidths * 2, Color.Green * 0.3f, .9f);
             }
         }

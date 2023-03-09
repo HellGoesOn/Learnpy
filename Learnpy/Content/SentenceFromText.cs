@@ -1,14 +1,10 @@
 ﻿using Learnpy.Content.Components;
 using Learnpy.Content.Systems;
-using Learnpy.Core;
 using Learnpy.Core.ECS;
+using Learnpy.Content.Scenes;
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Learnpy.Collision;
 
 namespace Learnpy.Content
@@ -47,12 +43,12 @@ namespace Learnpy.Content
                     PieceType p = word != words[words.Length - 1] ? PieceType.Middle : PieceType.End;
                     var e = world.Create();
                     var pos = new Vector2(200 + rand.Next(500), 56 + rand.Next(400));
-                    e.AddComponent(new TransformComponent(pos));
-                    e.AddComponent(new TextureComponent("PuzzlePiece"));
-                    e.AddComponent(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
-                    e.AddComponent(new PuzzleComponent(p) {StoredText = word });
-                    e.AddComponent(new MoveableComponent());
-                    e.AddComponent(new DragComponent());
+                    e.Add(new TransformComponent(pos));
+                    e.Add(new TextureComponent("PuzzlePiece"));
+                    e.Add(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
+                    e.Add(new PuzzleComponent(p) {StoredText = word });
+                    e.Add(new MoveableComponent());
+                    e.Add(new DragComponent());
                 }
             }
 

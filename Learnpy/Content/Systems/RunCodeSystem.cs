@@ -1,5 +1,5 @@
 ﻿using Learnpy.Content.Components;
-using Learnpy.Core;
+using Learnpy.Content.Scenes;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -26,9 +26,9 @@ namespace Learnpy.Content.Systems
                 {
                     var e = gameState.Entities[id];
 
-                    if(e.HasComponent<PuzzleComponent>())
+                    if(e.Has<PuzzleComponent>())
                     {
-                        sentence += e.GetComponent<PuzzleComponent>().StoredText + " ";
+                        sentence += e.Get<PuzzleComponent>().StoredText + " ";
                     }
                 }
                 CurrentSentence = sentence;
@@ -48,12 +48,12 @@ namespace Learnpy.Content.Systems
             {
                 var e = gameState.Entities[id];
 
-                if (e.HasComponent<PuzzleComponent>())
+                if (e.Has<PuzzleComponent>())
                 {
-                    if (e.HasComponent<MoveableComponent>())
+                    if (e.Has<MoveableComponent>())
                         continue;
 
-                    var puzzle = e.GetComponent<PuzzleComponent>();
+                    var puzzle = e.Get<PuzzleComponent>();
 
                     List<int> ids = new List<int>();
 
@@ -63,11 +63,11 @@ namespace Learnpy.Content.Systems
                             CurrentSentence += Environment.NewLine;
                         var otherEntity = gameState.Entities[puzzle.ConnectionTo];
                         ids.Add(otherEntity.Id);
-                        var otherPuzzle = otherEntity.GetComponent<PuzzleComponent>();
+                        var otherPuzzle = otherEntity.Get<PuzzleComponent>();
 
-                        while (otherEntity.GetComponent<PuzzleComponent>().ConnectionTo != -1)
+                        while (otherEntity.Get<PuzzleComponent>().ConnectionTo != -1)
                         {
-                            otherPuzzle = otherEntity.GetComponent<PuzzleComponent>();
+                            otherPuzzle = otherEntity.Get<PuzzleComponent>();
                             otherEntity = gameState.Entities[otherPuzzle.ConnectionTo];
                             ids.Add(otherEntity.Id);
                         }
@@ -76,7 +76,7 @@ namespace Learnpy.Content.Systems
                     foreach (var i in ids)
                     {
                         PuzzlePiecesInOrder.Add(i);
-                        string txt = gameState.Entities[i].GetComponent<PuzzleComponent>().StoredText;
+                        string txt = gameState.Entities[i].Get<PuzzleComponent>().StoredText;
                         CurrentSentence += txt;
                     }
                 }

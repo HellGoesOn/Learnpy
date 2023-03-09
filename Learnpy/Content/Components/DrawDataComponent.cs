@@ -6,13 +6,13 @@ namespace Learnpy.Content.Components
     {
         public float Depth;
         public Vector2 Origin;
-        public Vector2 Size;
+        public Vector2 Scale;
         public Color Tint;
 
-        public DrawDataComponent(Vector2 orig, Vector2 size, float depth = 1f, Color tint = default)
+        public DrawDataComponent(Vector2 orig, Vector2 scale, float depth = 1f, Color tint = default)
         {
             Origin = orig;
-            Size = size;
+            Scale = scale;
             Depth = depth;
             Tint = tint;
             if (Tint == default)

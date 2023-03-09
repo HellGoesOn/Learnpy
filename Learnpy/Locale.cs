@@ -23,5 +23,30 @@ namespace Learnpy
             }
             
         }
+
+        public static string GetTranslation(string key, string source = "options.txt")
+        {
+            if (source == "options.txt") {
+                if (Translations.TryGetValue(key, out var result))
+                    return result;
+                else
+                    return "???";
+            } else {
+                string path = $@"{Directory.GetCurrentDirectory()}\Content\{GameOptions.Language}\{source}";
+
+                if (!File.Exists(path))
+                    return "???";
+
+                string fileText = File.ReadAllText($@"{Directory.GetCurrentDirectory()}\Content\{GameOptions.Language}\{source}");
+
+                string[] lines = fileText.Split(';');
+                foreach (string line in lines) {
+                    Match match = Regex.Match(line, "(?<=" + key +"=).*");
+                    if (match.Success)
+                        return match.Value;
+                }
+                return "???";
+            }
+        }
     }
 }

@@ -6,15 +6,18 @@ namespace Learnpy.Core.ECS
     {
         public readonly int Id;
 
+        public bool IsDeleted { get; set; }
+
         public readonly World BelongsTo;
 
         public Entity(World world, int id = -1)
         {
+            IsDeleted = false;
             Id = id;
             BelongsTo = world;
         }
 
-        public ref T GetComponent<T>()
+        public ref T Get<T>()
             where T : struct
         {
             if (!BelongsTo.HasComponentCollection<T>())
@@ -23,10 +26,11 @@ namespace Learnpy.Core.ECS
             return ref BelongsTo.GetComponent<T>(Id);
         }
 
-        public bool HasComponent<T>()
+        public bool Has<T>()
             where T : struct
             => BelongsTo.HasComponentCollection<T>() && BelongsTo.Components[typeof(T)].HasComponent(Id);
-        public void AddComponent<T>(T component)
+
+        public void Add<T>(T component)
             where T : struct
         {
             if (!BelongsTo.HasComponentCollection<T>())
@@ -35,12 +39,12 @@ namespace Learnpy.Core.ECS
             BelongsTo.AddComponent(this.Id, component);
         }
 
-        public void RemoveComponent<T>() where T : struct
+        public void Remove<T>() where T : struct
         {
             if (!BelongsTo.HasComponentCollection<T>())
                 BelongsTo.AddCollection<T>();
 
-            BelongsTo.RemoveComponent(Id, GetComponent<T>());
+            BelongsTo.RemoveComponent(Id, Get<T>());
         }
     }
 }

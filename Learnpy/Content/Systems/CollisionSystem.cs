@@ -1,5 +1,5 @@
 ﻿using Learnpy.Content.Components;
-using Learnpy.Core;
+using Learnpy.Content.Scenes;
 using Learnpy.Core.ECS;
 
 namespace Learnpy.Content.Systems
@@ -11,8 +11,8 @@ namespace Learnpy.Content.Systems
             foreach (int e in gameState.EntitiesById)
             {
                 var entity = gameState.Entities[e];
-                ref var entityBox = ref entity.GetComponent<BoxComponent>();
-                var pos = entity.GetComponent<TransformComponent>().Position;
+                ref var entityBox = ref entity.Get<BoxComponent>();
+                var pos = entity.Get<TransformComponent>().Position;
 
                 entityBox.Box = new Collision.AABB(pos + entityBox.Box.Halfwidths, entityBox.Box.Halfwidths);
             }

@@ -13,5 +13,11 @@ namespace Learnpy.Content.Components
             Position = position;
             Rotation = rotation;
         }
+
+        public TransformComponent(float x, float y, float rotation = 0f)
+        {
+            Position = new Vector2(x, y);
+            Rotation = rotation;
+        }
     }
 }

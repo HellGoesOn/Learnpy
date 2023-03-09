@@ -62,29 +62,41 @@
   <ItemGroup>
     <Compile Include="Assets.cs" />
     <Compile Include="Collision.cs" />
+    <Compile Include="Content\Components\AnimationComponent.cs" />
     <Compile Include="Content\Components\BoxComponent.cs" />
     <Compile Include="Content\Components\ChangeTintComponent.cs" />
+    <Compile Include="Content\Components\DialogueComponent.cs" />
     <Compile Include="Content\Components\DragComponent.cs" />
     <Compile Include="Content\Components\DrawDataComponent.cs" />
+    <Compile Include="Content\Components\MusicComponent.cs" />
     <Compile Include="Content\Components\OpacityComponent.cs" />
     <Compile Include="Content\Components\MenuComponent.cs" />
     <Compile Include="Content\Components\MoveableComponent.cs" />
     <Compile Include="Content\Components\PuzzleComponent.cs" />
     <Compile Include="Content\Components\SpinComponent.cs" />
+    <Compile Include="Content\Components\TextInputComponent.cs" />
     <Compile Include="Content\Components\TextureComponent.cs" />
     <Compile Include="Content\Components\TransformComponent.cs" />
     <Compile Include="Content\Components\VelocityComponent.cs" />
     <Compile Include="Content\Enums.cs" />
+    <Compile Include="Content\Scenes\LearnGame.Cyberspace.cs" />
+    <Compile Include="Content\Scenes\SceneManager.cs" />
+    <Compile Include="Content\Scenes\Transitions\FadeToBlack.cs" />
+    <Compile Include="Content\Scenes\Transitions\ISceneTransition.cs" />
+    <Compile Include="Content\Scenes\Transitions\Slide.cs" />
     <Compile Include="Content\SentenceFromText.cs" />
+    <Compile Include="Content\Systems\CodeTypingSystem.cs" />
     <Compile Include="Content\Systems\CollisionSystem.cs" />
     <Compile Include="Content\Systems\CompletionSystem.cs" />
     <Compile Include="Content\Systems\ConnectionSystem.cs" />
+    <Compile Include="Content\Systems\DialogueSystem.cs" />
     <Compile Include="Content\Systems\DragSystem.cs" />
     <Compile Include="Content\Systems\DrawSystem.cs" />
     <Compile Include="Content\Systems\MenuSystem.cs" />
-    <Compile Include="Content\Systems\ReadOrderSystem.cs" />
+    <Compile Include="Content\Systems\MusicSystem.cs" />
     <Compile Include="Content\Systems\RunCodeSystem.cs" />
     <Compile Include="Content\Systems\VelocitySystem.cs" />
+    <Compile Include="Core\Camera.cs" />
     <Compile Include="Core\ECS\Archetype.cs" />
     <Compile Include="Core\ECS\ComponentCollection.cs" />
     <Compile Include="Core\ECS\Entity.cs" />
@@ -92,34 +104,34 @@
     <Compile Include="Core\ECS\World.cs" />
     <Compile Include="Core\Extensions\Vector2Extensions.cs" />
     <Compile Include="Core\Globals.cs" />
-    <Compile Include="Core\LearnGame.cs" />
-    <Compile Include="Core\LearnGame.MainMenu.cs" />
+    <Compile Include="Content\Scenes\LearnGame.cs" />
+    <Compile Include="Content\Scenes\LearnGame.MainMenu.cs" />
     <Compile Include="Core\Drawing\Renderer.cs" />
+    <Compile Include="Core\SoundEngine.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="GameOptions.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Input.Text.cs" />
     <Compile Include="Locale.cs" />
     <Compile Include="Util.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\Art\Bullet.png" />
-    <Content Include="Assets\Art\Drum.png" />
-    <Content Include="Assets\Art\MC.png" />
-    <Content Include="Content\en\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\ru\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\error\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Audio\Music\MainTheme.ogg" />
+    <Content Include="Content\en\monologue.txt" />
+    <Content Include="Content\ru\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\en\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\error\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Art\Pixel.png" />
+    <Content Include="Content\ru\monologue.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FNA\FNA.csproj">

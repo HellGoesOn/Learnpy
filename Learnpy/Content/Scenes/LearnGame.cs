@@ -1,6 +1,8 @@
 ﻿using Learnpy.Content;
 using Learnpy.Content.Components;
+using Learnpy.Content.Scenes.Transitions;
 using Learnpy.Content.Systems;
+using Learnpy.Core;
 using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
@@ -11,10 +13,11 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static Learnpy.Collision;
 
-namespace Learnpy.Core
+namespace Learnpy.Content.Scenes
 {
     public partial class LearnGame : Game
     {
+
         internal World MainMenu;
 
 		internal World MainWorld;
@@ -27,11 +30,11 @@ namespace Learnpy.Core
 
         internal GameState GameState;
 
-        internal RenderTarget2D RenderTarget;
-
         internal int GameWidth = 1360, GameHeight = 768;
 
         internal Vector2 Size => new Vector2(GameWidth, GameHeight);
+
+        internal List<ISceneTransition> sceneTransitions = new List<ISceneTransition>();
 
         internal LearnGame()
         {
@@ -44,13 +47,16 @@ namespace Learnpy.Core
 		protected override void Initialize()
         {
             base.Initialize();
-            Renderer.Target = new RenderTarget2D(gdm.GraphicsDevice, 1360, 768);
+            Renderer.MainTarget = new RenderTarget2D(gdm.GraphicsDevice, 1360, 768);
             gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
 
+            Worlds.Add(GameState.Cyberspace, new World());
             MainWorld = new World();
+            MainWorld.camera.centre = new Vector2(1360, 768) * 0.5f;
             MainMenu = new World();
+            MainMenu.camera.centre = new Vector2(1360, 768) * 0.5f;
 
             GameState = GameState.MainMenu;
 
@@ -60,7 +66,7 @@ namespace Learnpy.Core
             // init main menu
 
             InitializeMainMenu();
-
+            InitializeCyberspace();
 
             // init main playground
             MainWorld.AddCollection<TransformComponent>();
@@ -96,10 +102,10 @@ namespace Learnpy.Core
             for (int i = 0; i < 13; i++) {
                 var e = MainWorld.Create();
                 var pos = new Vector2(0, 56 * i);
-                e.AddComponent(new TransformComponent(pos));
-                e.AddComponent(new TextureComponent("PuzzlePiece"));
-                e.AddComponent(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
-                e.AddComponent(new PuzzleComponent(PieceType.Beginning));
+                e.Add(new TransformComponent(pos));
+                e.Add(new TextureComponent("PuzzlePiece"));
+                e.Add(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
+                e.Add(new PuzzleComponent(PieceType.Beginning));
             }
 
             CompletionSystem sys = MainWorld.GetSystem<CompletionSystem>();
@@ -126,7 +132,7 @@ namespace Learnpy.Core
 		protected override void Update(GameTime gameTime)
 		{
 			base.Update(gameTime);
-
+            SoundEngine.Update();
             if(GameOptions.NeedsUpdate) {
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
                 gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
@@ -134,17 +140,22 @@ namespace Learnpy.Core
                 GameOptions.NeedsUpdate = false;
             }
 
-            if (dies && --deathTime <= 0)
-                this.Exit();
-
             if (GameState == GameState.Playground && Input.PressedKey(Keys.C))
             {
                 ResetWorld();
                 SentenceFromText.Load(MainWorld, MainWorld.GetSystem<CompletionSystem>().LevelTarget-1);
             }
 
+            if (Input.PressedKey(Keys.End))
+                sceneTransitions.Add(new FadeToBlack(GameState, GameState.MainMenu));
+
+            foreach(ISceneTransition transition in sceneTransitions) {
+                transition.Update(this);
+            }
+
 			Worlds[GameState].Update();
 
+            sceneTransitions.RemoveAll(x => x.IsFinished());
 			Input.Update();
 		}
 
@@ -152,14 +163,19 @@ namespace Learnpy.Core
 		{
 			base.Draw(gameTime);
 
-            GraphicsDevice.SetRenderTarget(Renderer.Target);
-            GraphicsDevice.Clear(Color.DarkSeaGreen);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
-			Worlds[GameState].Draw(this);
-			spriteBatch.End();
+            if(sceneTransitions.Count <= 0)
+                Renderer.DrawScene(Worlds[GameState], Worlds[GameState].camera, Renderer.MainTarget);
+            else {
+                foreach(ISceneTransition transition in sceneTransitions) {
+                    transition.Draw(this);
+                }
+            }
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
-            spriteBatch.Draw(Renderer.Target, new Rectangle(0, 0, GameOptions.ScreenWidth, GameOptions.ScreenHeight), Color.White);
+            spriteBatch.Draw(Renderer.MainTarget, new Rectangle(0, 0, GameOptions.ScreenWidth, GameOptions.ScreenHeight), Color.White);
+            /*Renderer.DrawText($"MousePos: {Input.ScaledMousePos};" +
+                $" ToScreen:{Input.ScreenToWorldSpace(Worlds[GameState]).Position}" +
+                $" CamPos:{Worlds[GameState].camera.centre}", new Vector2(40), Assets.DefaultFont, Color.Lime, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);*/
             spriteBatch.End();
 		}
 	}

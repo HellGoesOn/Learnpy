@@ -10,6 +10,7 @@
     public enum GameState
     {
         MainMenu,
+        Cyberspace,
         Playground
     }
 }

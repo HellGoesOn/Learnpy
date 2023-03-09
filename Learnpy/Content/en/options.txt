@@ -6,3 +6,6 @@ language=Language;
 back=Back;
 time=Time;
 success=Success!;
+volume=Sound Volume;
+endItAll=End it all?;
+later=Maybe later...;

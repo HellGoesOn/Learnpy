@@ -1,4 +1,6 @@
-﻿namespace Learnpy.Core.ECS
+﻿using Learnpy.Content.Scenes;
+
+namespace Learnpy.Core.ECS
 {
     public interface ISystem
     {

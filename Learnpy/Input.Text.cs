@@ -47,8 +47,9 @@ namespace Learnpy
             }
         }
 
-        public static void StopTextInput()
+        public static void StopTextInput(out string resultedString)
         {
+            resultedString = editedString;
             TextInputEXT.StopTextInput();
             TextInputEXT.TextInput -= TextInputEXT_TextInput;
             editedString = "";

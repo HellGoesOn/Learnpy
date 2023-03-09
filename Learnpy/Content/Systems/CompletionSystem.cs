@@ -1,10 +1,11 @@
-﻿using Learnpy.Core;
-using Learnpy.Core.Drawing;
+﻿using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using Learnpy.Content.Scenes;
+using Learnpy.Content.Scenes.Transitions;
 
 namespace Learnpy.Content.Systems
 {
@@ -40,8 +41,7 @@ namespace Learnpy.Content.Systems
                     LevelTarget++;
                 } else {
                     LevelTarget = 1;
-                    EntryPoint.Instance.GameState = GameState.MainMenu;
-                    EntryPoint.Instance.ResetWorld();
+                    EntryPoint.Instance.sceneTransitions.Add(new FadeToBlack(GameState.Playground, GameState.MainMenu));
                 }
             }
 

@@ -1,5 +1,5 @@
 ﻿using Learnpy.Content.Components;
-using Learnpy.Core;
+using Learnpy.Content.Scenes;
 using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
@@ -14,11 +14,17 @@ namespace Learnpy.Content.Systems
 {
     public class MenuSystem : ISystem
     {
+        private float sway;
+        private float time;
+
         public void Execute(World gameState)
         {
+            sway = (float)Math.Sin(time) * 0.15f;
+            time += 0.05f;
+
             List<Action> actionsToInvoke = new List<Action>();
-            foreach (Entity e in gameState.ActiveEntities.Where(x => x.HasComponent<MenuComponent>())) {
-                ref var menu = ref e.GetComponent<MenuComponent>();
+            foreach (Entity e in gameState.ActiveEntities.Where(x => x.Has<MenuComponent>())) {
+                ref var menu = ref e.Get<MenuComponent>();
 
                 ref var opt = ref menu.Options[menu.SelectedIndex];
                 if (!menu.IsSelected || SDL.SDL_IsTextInputActive() == SDL.SDL_bool.SDL_TRUE)
@@ -63,32 +69,36 @@ namespace Learnpy.Content.Systems
         public void Render(LearnGame game)
         {
             World w = game.Worlds[game.GameState];
-            foreach (Entity e in w.ActiveEntities.Where(x => x.HasComponent<MenuComponent>())){
+            foreach (Entity e in w.ActiveEntities.Where(x => x.Has<MenuComponent>())){
                 int off = 0;
-                ref MenuComponent comp = ref e.GetComponent<MenuComponent>();
+                ref MenuComponent comp = ref e.Get<MenuComponent>();
 
-                ref var transform = ref e.GetComponent<TransformComponent>();
+                ref var transform = ref e.Get<TransformComponent>();
 
-                Vector2 positionOffset = Vector2.Zero;
-                if(e.HasComponent<TransformComponent>()) {
+                Vector2 positionOffset = new Vector2(GameOptions.ScreenWidth * 0.5f * 0.5f + 1, GameOptions.ScreenHeight * 0.5f * off + 1);
+                if(e.Has<TransformComponent>()) {
                     positionOffset = transform.Position;
                 }
 
                 foreach (var option in comp.Options) {
-                    bool selected = comp.SelectedIndex == off;
-                    string txt = Locale.Translations[option.Name];
+                    bool selected = comp.SelectedIndex == option.Index;
+                    string txt = Locale.GetTranslation(option.Name, option.LocalePath);
                     string lang = GameOptions.Language;
 
                     if (option.ValueList != null) {
                         txt += $": {option.ValueList[option.SelectedValue]}";
                     }
 
-                    float opacity = e.HasComponent<OpacityComponent>() ? e.GetComponent<OpacityComponent>().CurrentValue : 1.0f;
+                    float opacity = e.Has<OpacityComponent>() ? e.Get<OpacityComponent>().CurrentValue : 1.0f;
 
                     Vector2 size = Assets.DefaultFont.MeasureString(txt);
-                    Renderer.DrawText(txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f + 1, GameOptions.ScreenHeight * 0.5f + size.Y * off + 1) + positionOffset, Assets.DefaultFont, (selected ? Color.Red : Color.Black) * opacity, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
-                    Renderer.DrawText(txt, new Vector2(GameOptions.ScreenWidth * 0.5f - size.X * 0.5f, GameOptions.ScreenHeight * 0.5f + size.Y * off) + positionOffset, Assets.DefaultFont, (selected ? Color.Yellow : Color.Wheat) * opacity, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);
-                    off++;
+                    float rotation = selected ? sway / (txt.Length * 0.25f) : 0;
+                    Renderer.RequestScreenDraw(() =>
+                    {
+                        off++;
+                        Renderer.DrawText(txt, positionOffset + Vector2.One + new Vector2(0, size.Y * off), Assets.DefaultFont, (selected ? Color.Red : Color.Black) * opacity, rotation, Vector2.One, size * 0.5f, SpriteEffects.None);
+                       Renderer.DrawText(txt, positionOffset + new Vector2(0, size.Y * off), Assets.DefaultFont, (selected ? Color.Yellow : Color.Wheat) * opacity, rotation, Vector2.One, size * 0.5f, SpriteEffects.None);
+                   }); 
                 }
             }
         }

@@ -1,5 +1,5 @@
 ﻿using Learnpy.Content.Components;
-using Learnpy.Core;
+using Learnpy.Content.Scenes;
 using Learnpy.Core.ECS;
 using System.Linq;
 
@@ -9,10 +9,10 @@ namespace Learnpy.Content.Systems
     {
         public void Execute(World gameState)
         {
-            foreach(Entity e in gameState.ActiveEntities.Where(x => x.HasComponent<TransformComponent>() && x.HasComponent<VelocityComponent>())) {
+            foreach(Entity e in gameState.ActiveEntities.Where(x => x.Has<TransformComponent>() && x.Has<VelocityComponent>())) {
 
-                ref var transform = ref e.GetComponent<TransformComponent>();
-                ref var velocity = ref e.GetComponent<VelocityComponent>();
+                ref var transform = ref e.Get<TransformComponent>();
+                ref var velocity = ref e.Get<VelocityComponent>();
 
                 transform.Position += velocity.Value;
             }

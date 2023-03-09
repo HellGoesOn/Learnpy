@@ -1,5 +1,6 @@
 ﻿using Learnpy.Content.Components;
 using Learnpy.Content.Systems;
+using Learnpy.Content.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -16,11 +17,14 @@ namespace Learnpy.Core.ECS
         public Dictionary<Type, IComponentCollection> Components;
         public List<ISystem> Systems;
 
+        public Camera camera;
+
         public World()
         {
             Entities = new Entity[Globals.MAX_ENTITY_COUNT];
             Components = new Dictionary<Type, IComponentCollection>();
             Systems = new List<ISystem>();
+            camera = new Camera(EntryPoint.Instance.GraphicsDevice.Viewport);
 
             for (int i = 0; i < Globals.MAX_ENTITY_COUNT; i++)
             {
@@ -34,6 +38,8 @@ namespace Learnpy.Core.ECS
             {
                 system.Execute(this);
             }
+
+            camera.Update();
         }
 
         public void Draw(LearnGame game)
@@ -73,6 +79,7 @@ namespace Learnpy.Core.ECS
             EntitiesById.Remove(entityId);
             Entities[entityId] = default;
         }
+
 
         public void AddComponent<T>(int entityId, T component)
             where T : struct
@@ -126,6 +133,22 @@ namespace Learnpy.Core.ECS
         public void AddSystem<T>() where T : ISystem, new()
         {
             Systems.Add(new T());
+        }
+
+        /// <summary>
+        /// Removes all entities, systems & component storages from a given world
+        /// </summary>
+        public void WipeWorld()
+        {
+            foreach(Entity e in Entities) {
+                if (e.BelongsTo == null)
+                    continue;
+
+                Destroy(e.Id);
+            }
+
+            Systems.Clear();
+            Components.Clear();
         }
     }
 }

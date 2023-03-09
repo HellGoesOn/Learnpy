@@ -1,14 +1,13 @@
 ﻿using Learnpy.Core;
+using Learnpy.Content.Scenes;
 using Learnpy.Core.Drawing;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Learnpy.Content.Components;
 
 namespace Learnpy.Content.Systems
 {
@@ -25,8 +24,14 @@ namespace Learnpy.Content.Systems
 
                 if (isEditingText)
                     Input.StartTextInput("");
-                else
-                    Input.StopTextInput();
+                else {
+                    Input.StopTextInput(out string result);
+                    foreach (Entity e in gameState.ActiveEntities.Where(x => x.Has<TextInputComponent>())) {
+                        ref var text = ref e.Get<TextInputComponent>();
+                        if(text.Active)
+                            text.Text = result;
+                    }
+                }
             }
 
             if (!isEditingText)
@@ -60,7 +65,6 @@ namespace Learnpy.Content.Systems
 
             string fullline = string.Join(Environment.NewLine, allLines, 0, (int)MathHelper.Max(0, lineCountToCursor-1));
             int indexInLine = (int)MathHelper.Clamp(Input.textCursor - fullline.Length, 0, allLines[Math.Max(0, lineCountToCursor - 1)].Length);
-
 
             Texture2D pix = Assets.GetTexture("Pixel");
             Vector2 constOff = Assets.DefaultFont.MeasureString("1");

@@ -1,5 +1,6 @@
 ﻿using Learnpy.Core;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using SpriteFontPlus;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Learnpy
     public class Assets
     {
         private readonly static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
+        private readonly static Dictionary<string, Song> _songs = new Dictionary<string, Song>();
 
         public static SpriteFont DefaultFont { get; private set; }
         public static SpriteFont DefaultFontSmall { get; private set; }
@@ -38,11 +40,18 @@ namespace Learnpy
         public static void LoadAssets()
         {
             string[] textures = Directory.GetFiles("Assets/Art/");
+            string[] songs = Directory.GetFiles("Assets/Audio/Music");
 
             foreach (string texture in textures)
             {
                 var texturePath = Path.GetFileNameWithoutExtension(texture);
                 LoadTexture(texturePath, texturePath);
+            }
+
+            foreach (string song in songs) {
+                var songPath = Path.GetFileNameWithoutExtension(song);
+                Song resource = EntryPoint.Instance.Content.Load<Song>("Assets/Audio/Music/" + songPath);
+                _songs.Add(songPath, resource);
             }
 
             var fontDefault = TtfFontBaker.Bake(File.ReadAllBytes("Assets/Fonts/DefFont.ttf"),
@@ -97,5 +106,7 @@ namespace Learnpy
         }
 
         public static Texture2D GetTexture(string id) => _textures[id];
+
+        public static Song GetSong(string v) => _songs[v];
     }
 }
