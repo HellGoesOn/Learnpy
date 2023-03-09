@@ -119,8 +119,6 @@ namespace Learnpy.Content.Scenes
                     player.Get<AnimationComponent>().CurrentFrame = options.Get<MenuComponent>().SelectedIndex;
                 }
             });
-
-            PartTwo();
         }
 
         private float cameraRaiseTime;
@@ -224,7 +222,6 @@ namespace Learnpy.Content.Scenes
                     }
                 }
             });
-
         }
 
         private bool isSuccess;
@@ -232,6 +229,20 @@ namespace Learnpy.Content.Scenes
 
         public void SeemsLikeItWillHaveToWait(World cyberSpace, Entity player, Entity bug, Entity backdrop, Entity backdrop2, Entity sun)
         {
+            var hint = cyberSpace.Create();
+            hint.Add(new DialogueComponent(new[]
+            {
+                "В языке Python для вывода строк на экран используется функция 'print()'" +
+                "\nДля простоты, пока что, не задумывайтесь о значении некоторых слов." +
+                "\nЧем дальше Вы продвинетесь, тем более понятны они будут для вас." +
+                "\nА пока, просто считайте их 'волшебными'. Одно из таких слов - 'функция'." +
+                "\nПросто знайте, что чтобы вывести какой-либо текст с помощью 'print()'," +
+                "\nВам нужно в скобочках () поставить одинарные кавычки, а между ними написать абсолютно любой текст." +
+                "\nВ этом обучении, вам требуется написать именно 'Hello World!', но в любой другой ситуации, Вы ограничены не будете.",
+            }) { Speed = 50, CenteredOrigin = true, Color = Color.Goldenrod});
+            hint.Add(new TransformComponent(680, 500));
+            hint.Add(new OpacityComponent(0, 0, 0));
+
             var textReader = cyberSpace.Create();
             textReader.Add(new TextInputComponent("", true));
             textReader.Add(new TextureComponent("Pixel"));
@@ -253,6 +264,7 @@ namespace Learnpy.Content.Scenes
                         needsSuccess = isSuccess = false;
                         bug.Add(new SpinComponent(0.36f));
                         bug.Add(new OpacityComponent(0.56f, 0.0f, 0.05f));
+                        cyberSpace.Destroy(hint.Id);
                         VictoryDialogue(cyberSpace, player, backdrop, backdrop2, sun);
                     }
                 }
@@ -277,6 +289,7 @@ namespace Learnpy.Content.Scenes
                     player.Get<AnimationComponent>().CurrentFrame = 1;
                     cyberSpace.GetSystem<CodeTypingSystem>().isEditingText = true;
                     Input.StartTextInput("");
+                    hint.Add(new OpacityComponent(0, 1, 0.1f));
                 }
             });
             diag.Add(new TransformComponent(new Vector2(680, 280)));
