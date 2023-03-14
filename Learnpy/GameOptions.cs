@@ -34,7 +34,7 @@ namespace Learnpy
                 sw.WriteLine($"ScreenWidth=1360");
                 sw.WriteLine($"ScreenHeight=768");
                 sw.WriteLine($"Language=en");
-                sw.Write($"Volume=1.0f");
+                sw.Write($"Volume=1.0");
                 sw.Close();
             } else {
                 File.WriteAllText(config, string.Empty);

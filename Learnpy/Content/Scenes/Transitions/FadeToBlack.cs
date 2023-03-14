@@ -20,6 +20,7 @@ namespace Learnpy.Content.Scenes.Transitions
         public Color Color { get; set; }
         public Action TransitionDone { get; set; }
         public Action SceneChange { get; set; }
+        public IContext Context { get; set; }
 
         private bool flip;
 
@@ -59,7 +60,7 @@ namespace Learnpy.Content.Scenes.Transitions
                 }
                 Fade += FadeOutSpeed;
             } else {
-                SceneManager.SwitchScene(TargetScene);
+                SceneManager.SwitchScene(TargetScene, Context);
                 if (Fade >= 0.0f)
                     Fade -= FadeInSpeed;
                 else {

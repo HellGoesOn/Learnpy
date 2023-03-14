@@ -1,4 +1,5 @@
-﻿using Learnpy.Content.Systems;
+﻿using Learnpy.Content.Scenes.Transitions;
+using Learnpy.Content.Systems;
 using Learnpy.Core.ECS;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Learnpy.Content.Scenes
 {
     public class SceneManager
     {
-        public static void SwitchScene(GameState scene)
+        public static void SwitchScene(GameState scene, IContext context = null)
         {
             if (scene != EntryPoint.Instance.GameState) {
                 EntryPoint.Instance.GameState = scene;
@@ -27,6 +28,10 @@ namespace Learnpy.Content.Scenes
                     case GameState.Cyberspace:
                         w.WipeWorld();
                         EntryPoint.Instance.InitializeCyberspace();
+                        break;
+                    case GameState.Combat:
+                        w.WipeWorld();
+                        EntryPoint.Instance.BeginCombat(context as CombatContext);
                         break;
                 }
             }

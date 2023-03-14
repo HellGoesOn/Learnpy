@@ -15,5 +15,10 @@ namespace Learnpy.Content.Components
         {
             Value = velocity;
         }
+
+        public VelocityComponent(float x, float y)
+        {
+            this.Value = new Vector2(x, y);
+        }
     }
 }

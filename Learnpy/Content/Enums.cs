@@ -7,10 +7,19 @@
         End
     }
 
+    public enum Direction
+    {
+        Left,
+        Right,
+        Up,
+        Down
+    }
+
     public enum GameState
     {
         MainMenu,
         Cyberspace,
-        Playground
+        Playground,
+        Combat
     }
 }

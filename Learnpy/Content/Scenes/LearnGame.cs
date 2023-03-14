@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using static Learnpy.Collision;
 
@@ -57,6 +58,8 @@ namespace Learnpy.Content.Scenes
             MainWorld.camera.centre = new Vector2(1360, 768) * 0.5f;
             MainMenu = new World();
             MainMenu.camera.centre = new Vector2(1360, 768) * 0.5f;
+            Worlds.Add(GameState.Combat, new World());
+            Worlds[GameState.Combat].camera.centre = new Vector2(1360, 768) * 0.5f;
 
             GameState = GameState.MainMenu;
 
@@ -67,6 +70,7 @@ namespace Learnpy.Content.Scenes
 
             InitializeMainMenu();
             InitializeCyberspace();
+            BeginCombat(null);
 
             // init main playground
             MainWorld.AddCollection<TransformComponent>();
@@ -146,10 +150,13 @@ namespace Learnpy.Content.Scenes
                 SentenceFromText.Load(MainWorld, MainWorld.GetSystem<CompletionSystem>().LevelTarget-1);
             }
 
-            if (Input.PressedKey(Keys.End))
-                sceneTransitions.Add(new FadeToBlack(GameState, GameState.MainMenu));
+            if (Input.PressedKey(Keys.End)) 
+                sceneTransitions.Add(new SlideTransition(GameState, GameState.MainMenu, (Direction)new Random().Next((int)Direction.Down + 1)) {
+                Color = Color.Black,
+                SlideSpeed = 0.02f
+            });
 
-            foreach(ISceneTransition transition in sceneTransitions) {
+            foreach (ISceneTransition transition in sceneTransitions) {
                 transition.Update(this);
 
                 if (transition.SceneChanged())
@@ -179,7 +186,7 @@ namespace Learnpy.Content.Scenes
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             spriteBatch.Draw(Renderer.MainTarget, new Rectangle(0, 0, GameOptions.ScreenWidth, GameOptions.ScreenHeight), Color.White);
-            /*Renderer.DrawText($"MousePos: {Input.ScaledMousePos};" +
+            /*Renderer.DrawText($"AnyVelocity:{Worlds[GameState].ActiveEntities.FirstOrDefault(x =>x.Has<VelocityComponent>()).Id};Entities: {Worlds[GameState].ActiveEntities.Count}; MousePos: {Input.ScaledMousePos};" +
                 $" ToScreen:{Input.ScreenToWorldSpace(Worlds[GameState]).Position}" +
                 $" CamPos:{Worlds[GameState].camera.centre}", new Vector2(40), Assets.DefaultFont, Color.Lime, 0f, Vector2.One, Vector2.Zero, SpriteEffects.None);*/
             spriteBatch.End();
