@@ -1,5 +1,6 @@
 ﻿using Learnpy.Content.Scenes.Transitions;
 using Learnpy.Content.Systems;
+using Learnpy.Core;
 using Learnpy.Core.ECS;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Learnpy.Content.Scenes
                 switch (scene) {
                     case GameState.MainMenu:
                         w.WipeWorld();
+                        SoundEngine.StartMusic("MainTheme", true);
                         EntryPoint.Instance.InitializeMainMenu();
                         break;
                     case GameState.Playground:
@@ -31,6 +33,7 @@ namespace Learnpy.Content.Scenes
                         break;
                     case GameState.Combat:
                         w.WipeWorld();
+                        SoundEngine.StartMusic("KickBack", true);
                         EntryPoint.Instance.BeginCombat(context as CombatContext);
                         break;
                 }

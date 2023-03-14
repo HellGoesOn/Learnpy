@@ -1,6 +1,7 @@
 ﻿using Learnpy.Content.Components;
 using Learnpy.Content.Scenes.Transitions;
 using Learnpy.Content.Systems;
+using Learnpy.Core;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -75,6 +76,7 @@ namespace Learnpy.Content.Scenes
                                 act.Action = () =>
                                 {
                                     if (Input.PressedKey(Keys.Space)) {
+                                        SoundEngine.PlaySound("GunShot");
                                         bullet.Add(new VelocityComponent(64, 0));
                                     }
                                 };
@@ -100,6 +102,8 @@ namespace Learnpy.Content.Scenes
 
                             bulletsOnStandBy.Add(combatBullets[0]);
 
+                            SoundEngine.PlaySound("DrumSpin");
+
                             foreach (var bul in combatBullets) {
                                 bul.Get<TransformComponent>().Position -= new Vector2(0, 60);
                             }
@@ -113,6 +117,7 @@ namespace Learnpy.Content.Scenes
                             act.Action = () =>
                             {
                                 if (Input.PressedKey(Keys.Space)) {
+                                    SoundEngine.PlaySound("GunShot");
                                     nextBullet.Add(new VelocityComponent(64, 0));
                                 }
                             };
@@ -151,6 +156,7 @@ namespace Learnpy.Content.Scenes
                     bullet.Get<AnimationComponent>().Action = () =>
                     {
                         if (Input.PressedKey(Keys.Space)) {
+                            SoundEngine.PlaySound("GunShot");
                             bullet.Add(new VelocityComponent(64, 0));
                         }
                     };

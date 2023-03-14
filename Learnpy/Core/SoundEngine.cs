@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Media;
+﻿using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,13 @@ namespace Learnpy.Core
             }
 
             MediaPlayer.Volume = GameOptions.Volume;
+        }
+
+        public static SoundEffectInstance PlaySound(string name)
+        {
+            var fx = Assets.GetSound(name).CreateInstance();
+            fx.Play();
+            return fx;
         }
     }
 }

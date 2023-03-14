@@ -1,4 +1,5 @@
 ﻿using Learnpy.Core;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using SpriteFontPlus;
@@ -15,6 +16,7 @@ namespace Learnpy
     {
         private readonly static Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
         private readonly static Dictionary<string, Song> _songs = new Dictionary<string, Song>();
+        private readonly static Dictionary<string, SoundEffect> _sounds = new Dictionary<string, SoundEffect>();
 
         public static SpriteFont DefaultFont { get; private set; }
         public static SpriteFont DefaultFontSmall { get; private set; }
@@ -41,6 +43,7 @@ namespace Learnpy
         {
             string[] textures = Directory.GetFiles("Assets/Art/");
             string[] songs = Directory.GetFiles("Assets/Audio/Music");
+            string[] sounds = Directory.GetFiles("Assets/Audio/Sounds");
 
             foreach (string texture in textures)
             {
@@ -52,6 +55,12 @@ namespace Learnpy
                 var songPath = Path.GetFileNameWithoutExtension(song);
                 Song resource = EntryPoint.Instance.Content.Load<Song>("Assets/Audio/Music/" + songPath);
                 _songs.Add(songPath, resource);
+            }
+
+            foreach (string sound in sounds) {
+                var soundPath = Path.GetFileNameWithoutExtension(sound);
+                SoundEffect resource = EntryPoint.Instance.Content.Load<SoundEffect>("Assets/Audio/Sounds/" + soundPath);
+                _sounds.Add(soundPath, resource);
             }
 
             var fontDefault = TtfFontBaker.Bake(File.ReadAllBytes("Assets/Fonts/DefFont.ttf"),
@@ -103,10 +112,24 @@ namespace Learnpy
             {
                 texture.Value.Dispose();
             }
+
+            foreach (var song in _songs) {
+                song.Value.Dispose();
+            }
+
+            foreach (var sound in _sounds) {
+                sound.Value.Dispose();
+            }
+
+            _sounds.Clear();
+            _textures.Clear();
+            _songs.Clear();
         }
 
         public static Texture2D GetTexture(string id) => _textures[id];
 
         public static Song GetSong(string v) => _songs[v];
+
+        public static SoundEffect GetSound(string id) => _sounds[id];
     }
 }
