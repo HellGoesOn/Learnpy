@@ -74,10 +74,12 @@
     <Compile Include="Content\Components\MoveableComponent.cs" />
     <Compile Include="Content\Components\PuzzleComponent.cs" />
     <Compile Include="Content\Components\SpinComponent.cs" />
+    <Compile Include="Content\Components\TextComponent.cs" />
     <Compile Include="Content\Components\TextInputComponent.cs" />
     <Compile Include="Content\Components\TextureComponent.cs" />
     <Compile Include="Content\Components\TransformComponent.cs" />
     <Compile Include="Content\Components\VelocityComponent.cs" />
+    <Compile Include="Content\Components\RequirementComponent.cs" />
     <Compile Include="Content\Enums.cs" />
     <Compile Include="Content\Scenes\LearnGame.CombatField.cs" />
     <Compile Include="Content\Scenes\LearnGame.Cyberspace.cs" />
@@ -88,7 +90,7 @@
     <Compile Include="Content\Scenes\Transitions\ISceneTransition.cs" />
     <Compile Include="Content\Scenes\Transitions\IContext.cs" />
     <Compile Include="Content\SentenceFromText.cs" />
-    <Compile Include="Content\Systems\CodeTypingSystem.cs" />
+    <Compile Include="Content\Systems\TextInputSystem.cs" />
     <Compile Include="Content\Systems\CollisionSystem.cs" />
     <Compile Include="Content\Systems\CompletionSystem.cs" />
     <Compile Include="Content\Systems\ConnectionSystem.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Content\Systems\MusicSystem.cs" />
     <Compile Include="Content\Systems\RunCodeSystem.cs" />
     <Compile Include="Content\Systems\VelocitySystem.cs" />
+    <Compile Include="Content\TextContext.cs" />
     <Compile Include="Core\Camera.cs" />
     <Compile Include="Core\ECS\Archetype.cs" />
     <Compile Include="Core\ECS\ComponentCollection.cs" />
@@ -120,20 +123,17 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Art\Crosshair.png" />
-    <Content Include="Assets\Audio\Music\KickBack.ogg" />
-    <Content Include="Assets\Audio\Sounds\DrumSpin.wav" />
-    <Content Include="Assets\Audio\Sounds\GunShot.wav" />
+    <Content Include="Assets\Art\StackOverflow.png" />
     <Content Include="Content\ru\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\en\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\error\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Art\Pixel.png" />
     <Content Include="Content\ru\monologue.txt" />

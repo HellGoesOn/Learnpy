@@ -72,7 +72,8 @@ namespace Learnpy
                     CharacterRange.BasicLatin,
                     CharacterRange.Latin1Supplement,
                     CharacterRange.Cyrillic,
-                    CharacterRange.LatinExtendedA
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.CyrillicSupplement
                 });
 
             DefaultFont = fontDefault.CreateSpriteFont(EntryPoint.Instance.GraphicsDevice);
@@ -86,7 +87,8 @@ namespace Learnpy
                     CharacterRange.BasicLatin,
                     CharacterRange.Latin1Supplement,
                     CharacterRange.Cyrillic,
-                    CharacterRange.LatinExtendedA
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.CyrillicSupplement
                 });
 
             DefaultFontBig = fontDefaultBig.CreateSpriteFont(EntryPoint.Instance.GraphicsDevice);
@@ -100,7 +102,8 @@ namespace Learnpy
                     CharacterRange.BasicLatin,
                     CharacterRange.Latin1Supplement,
                     CharacterRange.Cyrillic,
-                    CharacterRange.LatinExtendedA
+                    CharacterRange.LatinExtendedA,
+                    CharacterRange.CyrillicSupplement
                 });
 
             DefaultFontSmall = fontDefaultSmall.CreateSpriteFont(EntryPoint.Instance.GraphicsDevice);
@@ -126,10 +129,31 @@ namespace Learnpy
             _songs.Clear();
         }
 
-        public static Texture2D GetTexture(string id) => _textures[id];
+        public static Texture2D GetTexture(string id)
+        {
+            if(_textures.TryGetValue(id, out Texture2D r)) {
+                return r;
+            }
 
-        public static Song GetSong(string v) => _songs[v];
+            return _textures["Pixel"];
+        }
 
-        public static SoundEffect GetSound(string id) => _sounds[id];
+        public static Song GetSong(string v)
+        {
+            if (_songs.TryGetValue(v, out Song r)) {
+                return r;
+            }
+
+            return null;
+        }
+
+        public static SoundEffect GetSound(string id)
+        {
+            if (_sounds.TryGetValue(id, out SoundEffect result)) {
+                return result;
+            }
+
+            return null;
+        }
     }
 }

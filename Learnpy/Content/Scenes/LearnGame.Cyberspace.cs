@@ -119,6 +119,8 @@ namespace Learnpy.Content.Scenes
                     player.Get<AnimationComponent>().CurrentFrame = options.Get<MenuComponent>().SelectedIndex;
                 }
             });
+
+            PartTwo();
         }
 
         private float cameraRaiseTime;
@@ -136,7 +138,7 @@ namespace Learnpy.Content.Scenes
             cyberSpace.AddSystem<DialogueSystem>();
             cyberSpace.AddSystem<MenuSystem>();
             cyberSpace.AddSystem<VelocitySystem>();
-            cyberSpace.AddSystem<CodeTypingSystem>();
+            cyberSpace.AddSystem<TextInputSystem>();
             var cam = Worlds[GameState.Cyberspace].camera;
             cam.zoom = 4f;
             cam.centre = new Vector2(1360, 768) * cam.zoom * 0.5f;
@@ -229,46 +231,46 @@ namespace Learnpy.Content.Scenes
 
         public void SeemsLikeItWillHaveToWait(World cyberSpace, Entity player, Entity bug, Entity backdrop, Entity backdrop2, Entity sun)
         {
-            var hint = cyberSpace.Create();
-            hint.Add(new DialogueComponent(new[]
-            {
-                "В языке Python для вывода строк на экран используется функция 'print()'" +
-                "\nДля простоты, пока что, не задумывайтесь о значении некоторых слов." +
-                "\nЧем дальше Вы продвинетесь, тем более понятны они будут для вас." +
-                "\nА пока, просто считайте их 'волшебными'. Одно из таких слов - 'функция'." +
-                "\nПросто знайте, что чтобы вывести какой-либо текст с помощью 'print()'," +
-                "\nВам нужно в скобочках () поставить одинарные кавычки, а между ними написать абсолютно любой текст." +
-                "\nВ этом обучении, вам требуется написать именно 'Hello World!', но в любой другой ситуации, Вы ограничены не будете.",
-            }) { Speed = 50, CenteredOrigin = true, Color = Color.Goldenrod});
-            hint.Add(new TransformComponent(680, 500));
-            hint.Add(new OpacityComponent(0, 0, 0));
+            //var hint = cyberSpace.Create();
+            //hint.Add(new DialogueComponent(new[]
+            //{
+            //    "В языке Python для вывода строк на экран используется функция 'print()'" +
+            //    "\nДля простоты, пока что, не задумывайтесь о значении некоторых слов." +
+            //    "\nЧем дальше Вы продвинетесь, тем более понятны они будут для вас." +
+            //    "\nА пока, просто считайте их 'волшебными'. Одно из таких слов - 'функция'." +
+            //    "\nПросто знайте, что чтобы вывести какой-либо текст с помощью 'print()'," +
+            //    "\nВам нужно в скобочках () поставить одинарные кавычки, а между ними написать абсолютно любой текст." +
+            //    "\nВ этом обучении, вам требуется написать именно 'Hello World!', но в любой другой ситуации, Вы ограничены не будете.",
+            //}) { Speed = 50, CenteredOrigin = true, Color = Color.Goldenrod});
+            //hint.Add(new TransformComponent(680, 500));
+            //hint.Add(new OpacityComponent(0, 0, 0));
 
-            var textReader = cyberSpace.Create();
-            textReader.Add(new TextInputComponent("", true));
-            textReader.Add(new TextureComponent("Pixel"));
-            textReader.Add(new TransformComponent());
-            textReader.Add(new AnimationComponent() {
-                Action = () =>
-                 {
-                     if (Input.ReleasedKey(Keys.Delete)) {
-                         if (textReader.Get<TextInputComponent>().Text == "print('Hello World!')") {
-                             isSuccess = true;
-                         } else {
-                             textReader.Get<TextInputComponent>().Text = "";
-                         }
-                     }
-                 },
-                OnEndAction = () =>
-                {
-                    if (isSuccess && needsSuccess) {
-                        needsSuccess = isSuccess = false;
-                        bug.Add(new SpinComponent(0.36f));
-                        bug.Add(new OpacityComponent(0.56f, 0.0f, 0.05f));
-                        cyberSpace.Destroy(hint.Id);
-                        VictoryDialogue(cyberSpace, player, backdrop, backdrop2, sun);
-                    }
-                }
-            });
+            //var textReader = cyberSpace.Create();
+            //textReader.Add(new TextInputComponent("", true));
+            //textReader.Add(new TextureComponent("Pixel"));
+            //textReader.Add(new TransformComponent());
+            //textReader.Add(new AnimationComponent() {
+            //    Action = () =>
+            //     {
+            //         if (Input.ReleasedKey(Keys.Delete)) {
+            //             if (textReader.Get<TextInputComponent>().Text == "print('Hello World!')") {
+            //                 isSuccess = true;
+            //             } else {
+            //                 textReader.Get<TextInputComponent>().Text = "";
+            //             }
+            //         }
+            //     },
+            //    OnEndAction = () =>
+            //    {
+            //        if (isSuccess && needsSuccess) {
+            //            needsSuccess = isSuccess = false;
+            //            bug.Add(new SpinComponent(0.36f));
+            //            bug.Add(new OpacityComponent(0.56f, 0.0f, 0.05f));
+            //            cyberSpace.Destroy(hint.Id);
+            //            VictoryDialogue(cyberSpace, player, backdrop, backdrop2, sun);
+            //        }
+            //    }
+            //});
             var diag = cyberSpace.Create();
             diag.Add(new DialogueComponent(new[] {
                 "     ",
@@ -276,20 +278,22 @@ namespace Learnpy.Content.Scenes
                 "> То, что Вы сейчас наблюдаете, нечто иное, как \"Ошибка\".",
                 "> Они появляются повсюду, а виной тому - плохой код, написанный неграмотными людьми.",
                 "> Конечно, Вас это не касается.",
-                "> Вам придётся сразиться с этим \"Багом\".",
-                "> Без паники, судя по всему, конкретно этот индивид - крайне слаб.",
-                "> Для победы над ним, напишите свою первую программу - \"Hello World!\" с помощью функции print().",
-                "> Когда вы будете уверены в набранном коде, просто нажмите Delete на клавиатуре.",
-                "> Даже если вы ошибётесь, вы сможете попробовать ещё раз просто повторно нажав Delete."
+                "> Вам придётся сразиться с этим \"Багом\"."
             }) {
                 Font = Assets.DefaultFont, AutoScroll = true, Speed = 4f, CenteredOrigin = true, Color = Color.Yellow, TimeUntilNextPageMax = 120,
                 OnDialogueEnd = () =>
                 {
                     cyberSpace.Destroy(diag.Id);
                     player.Get<AnimationComponent>().CurrentFrame = 1;
-                    cyberSpace.GetSystem<CodeTypingSystem>().isEditingText = true;
                     Input.StartTextInput("");
-                    hint.Add(new OpacityComponent(0, 1, 0.1f));
+                    sceneTransitions.Add(new SlideTransition(GameState, GameState.Combat, (Direction)new Random().Next((int)Direction.Down + 1)) {
+                        Color = Color.Black,
+                        SlideSpeed = 0.02f,
+                        Context = new CombatContext() {
+                            BulletCount = 5,
+                            EnemyCount = 2
+                        }
+                    });
                 }
             });
             diag.Add(new TransformComponent(new Vector2(680, 280)));
@@ -313,7 +317,7 @@ namespace Learnpy.Content.Scenes
                 cyberSpace.Destroy(diag.Id);
                 player.Get<AnimationComponent>().CurrentFrame = 0;
                 player.Add(new VelocityComponent(new Vector2(1, 0)));
-                cyberSpace.GetSystem<CodeTypingSystem>().isEditingText = true;
+                cyberSpace.GetSystem<TextInputSystem>().isEditingText = true;
                 Input.StartTextInput("");
                 backdrop.Add(new ChangeTintComponent(Color.Aqua, 0.025f));
                 backdrop2.Add(new ChangeTintComponent(Color.Gray, 0.025f));

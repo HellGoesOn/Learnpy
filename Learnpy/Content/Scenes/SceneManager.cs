@@ -33,7 +33,8 @@ namespace Learnpy.Content.Scenes
                         break;
                     case GameState.Combat:
                         w.WipeWorld();
-                        SoundEngine.StartMusic("KickBack", true);
+                        EntryPoint.Instance.Worlds[GameState.Combat].WipeWorld();
+                        SoundEngine.StartMusic("MassYike", true);
                         EntryPoint.Instance.BeginCombat(context as CombatContext);
                         break;
                 }

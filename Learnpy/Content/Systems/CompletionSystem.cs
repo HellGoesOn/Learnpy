@@ -56,10 +56,10 @@ namespace Learnpy.Content.Systems
         {
             TimeSpan t = TimeSpan.FromSeconds(Time);
             Vector2 size = Assets.DefaultFont.MeasureString(Task) + new Vector2(10, 0);
-            Util.DrawRectangle(gameRenderer.spriteBatch, new Vector2(495, 595), size, Color.Black * 0.75f);
+            Util.DrawRectangle(gameRenderer.spriteBatch, new Vector2(395, 495), size, Color.Black * 0.75f);
             Renderer.DrawText($"{Locale.Translations["time"]}: {t.ToString(@"mm\:ss")}", new Vector2(900, 20), Assets.DefaultFont, Color.LightGoldenrodYellow, 0f, new Vector2(1), Vector2.Zero, SpriteEffects.None);
-            Renderer.DrawText($"{Task}", new Vector2(501, 601), Assets.DefaultFont, Color.Black, 0f, new Vector2(1), Vector2.Zero, SpriteEffects.None);
-            Renderer.DrawText($"{Task}", new Vector2(500, 600), Assets.DefaultFont, Color.LightGoldenrodYellow, 0f,  new Vector2(1), Vector2.Zero, SpriteEffects.None);
+            Renderer.DrawText($"{Task}", new Vector2(401, 501), Assets.DefaultFont, Color.Black, 0f, new Vector2(1), Vector2.Zero, SpriteEffects.None);
+            Renderer.DrawText($"{Task}", new Vector2(400, 500), Assets.DefaultFont, Color.LightGoldenrodYellow, 0f,  new Vector2(1), Vector2.Zero, SpriteEffects.None);
             if (PrintTime > 0) {
                 Util.DrawRectangle(gameRenderer.spriteBatch, new Vector2(0, 260), new Vector2(1500, 200), Color.Black * 0.3f, 0.9f);
                 Renderer.DrawText($"{Locale.Translations["success"]}", new Vector2(520, 300), Assets.DefaultFont, Color.Lime, 0f,  new Vector2(1), Vector2.Zero, SpriteEffects.None);

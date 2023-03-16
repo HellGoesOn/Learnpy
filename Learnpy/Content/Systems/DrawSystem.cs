@@ -43,6 +43,11 @@ namespace Learnpy.Content.Systems
                     if (c.OnEndAction != null)
                         actionQueue.Add(c.OnEndAction);
                 }
+
+                if (e.Has<TextComponent>()) {
+                    TextComponent c = e.Get<TextComponent>();
+                    c.Action?.Invoke();
+                }
             }
 
             foreach (Action action in actionQueue) {
@@ -59,22 +64,7 @@ namespace Learnpy.Content.Systems
             IEnumerable<Entity> mainList = w.ActiveEntities.Where(x => x.Has<TransformComponent>()
             && x.Has<TextureComponent>());
 
-            foreach (Entity e in mainList.Where(x => x.Has<PuzzleComponent>())) {
-                TransformComponent transform = e.Get<TransformComponent>();
-                TextureComponent texturePath = e.Get<TextureComponent>();
-
-                PuzzleComponent puzzle = e.Get<PuzzleComponent>();
-                Texture2D texture = Assets.GetTexture(texturePath.Name);
-
-                Rectangle rect = new Rectangle(0, 64 * (int)puzzle.PieceType, 128, 64);
-
-                string finalText = Util.SpliceText(puzzle.StoredText, 8);
-                Renderer.Draw(texture, transform.Position, rect, Color.White, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None);
-                var origin = Assets.DefaultFontSmall.MeasureString(finalText);
-                Renderer.DrawText(finalText, transform.Position + new Vector2(64, 32), Assets.DefaultFontSmall, Color.Purple, transform.Rotation, Vector2.One, origin * 0.5f, SpriteEffects.None);
-            }
-
-            foreach (Entity e in mainList.Where(x => !x.Has<PuzzleComponent>())) {
+            foreach (Entity e in mainList/*.Where(x => !x.Has<PuzzleComponent>())*/) {
                 TransformComponent transform = e.Get<TransformComponent>();
                 TextureComponent texturePath = e.Get<TextureComponent>();
                 Texture2D texture = Assets.GetTexture(texturePath.Name);
@@ -103,6 +93,15 @@ namespace Learnpy.Content.Systems
                 float rot = transform.Rotation;
 
                 Renderer.Draw(texture, transform.Position, frame, clr * opacity, rot, origin, scale, sfx);
+
+                if (e.Has<TextComponent>()) {
+                    var texts = e.Get<TextComponent>();
+                    
+                    foreach(TextContext t in texts.Texts) {
+                        Renderer.DrawText(t.Text, transform.Position + t.Position + t.ShadowOffset, t.Font, t.ShadowColor * opacity * t.Opacity, t.Rotation, t.Scale, t.Origin, SpriteEffects.None);
+                        Renderer.DrawText(t.Text, transform.Position + t.Position, t.Font, t.Color * opacity * t.Opacity, t.Rotation, t.Scale, t.Origin, SpriteEffects.None);
+                    }
+                }
             }
         }
     }

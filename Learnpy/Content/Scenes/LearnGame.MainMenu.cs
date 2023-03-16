@@ -106,12 +106,12 @@ namespace Learnpy.Content.Scenes
 
                 mainMenu.Get<MenuComponent>().Options[0].Name = "start";
                 /*GameState = GameState.Playground;*/
-                sceneTransitions.Add(new SlideTransition(GameState, GameState.Combat, (Direction)new Random().Next((int)Direction.Down+1)) {
+                sceneTransitions.Add(new SlideTransition(GameState, GameState.Cyberspace, (Direction)new Random().Next((int)Direction.Down+1)) {
                     Color = Color.Black,
                     SlideSpeed = 0.1f,
                     Delay = 1f,
                     Context = new CombatContext() {
-                        BulletCount = 3,
+                        BulletCount = 5,
                         EnemyCount = 3
                     }
                 });

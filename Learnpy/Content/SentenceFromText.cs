@@ -49,6 +49,12 @@ namespace Learnpy.Content
                     e.Add(new PuzzleComponent(p) {StoredText = word });
                     e.Add(new MoveableComponent());
                     e.Add(new DragComponent());
+                    e.Add(new AnimationComponent(new[] { new Rectangle(0, 64 * (int)p, 128, 64) }));
+                    e.Add(new TextComponent(
+                        new TextContext(word, new Vector2(64, 32))
+                        { Origin = Assets.DefaultFontSmall.MeasureString(word) * 0.5f,
+                        Color = Color.Purple,
+                        Font = Assets.DefaultFontSmall}));
                 }
             }
 

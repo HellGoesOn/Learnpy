@@ -32,23 +32,38 @@ namespace Learnpy.Core
             if (_updatedSong) {
                 _updatedSong = false;
                 MediaPlayer.Stop();
-                MediaPlayer.Play(Assets.GetSong(_currentSong));
+                var song = Assets.GetSong(_currentSong);
+
+                if(song != null)
+                    MediaPlayer.Play(song);
             }
 
             if(MediaPlayer.State == MediaState.Stopped) {
                 if (_isLooping) {
-                    MediaPlayer.Play(Assets.GetSong(_currentSong));
+                    var song = Assets.GetSong(_currentSong);
+
+                    if (song != null)
+                        MediaPlayer.Play(song);
                 }
             }
 
             MediaPlayer.Volume = GameOptions.Volume;
         }
 
-        public static SoundEffectInstance PlaySound(string name)
+        public static SoundEffectInstance PlaySound(string name, float volume = -1f)
         {
-            var fx = Assets.GetSound(name).CreateInstance();
-            fx.Play();
-            return fx;
+            if (volume == -1f)
+                volume = GameOptions.Volume;
+
+            var fx = Assets.GetSound(name)?.CreateInstance();
+
+            if (fx != null) {
+                fx.Volume = volume;
+                fx.Play();
+                return fx;
+            }
+
+            return null;
         }
     }
 }

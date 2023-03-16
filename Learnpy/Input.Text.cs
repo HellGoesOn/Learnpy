@@ -14,11 +14,17 @@ namespace Learnpy
         public static int textCursor;
         public static string editedString ="";
 
+        private static bool _alreadyActive;
+
         public static void StartTextInput(string _editedString)
         {
+            if (!_alreadyActive) {
+                TextInputEXT.TextInput += TextInputEXT_TextInput;
+                TextInputEXT.StartTextInput();
+            }
             editedString = _editedString;
-            TextInputEXT.TextInput += TextInputEXT_TextInput;
-            TextInputEXT.StartTextInput();
+            textCursor = _editedString.Length;
+            _alreadyActive = true;
         }
 
         private static void TextInputEXT_TextInput(char obj)
@@ -49,6 +55,7 @@ namespace Learnpy
 
         public static void StopTextInput(out string resultedString)
         {
+            _alreadyActive = false;
             resultedString = editedString;
             TextInputEXT.StopTextInput();
             TextInputEXT.TextInput -= TextInputEXT_TextInput;

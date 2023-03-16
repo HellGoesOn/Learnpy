@@ -110,6 +110,7 @@ namespace Learnpy.Content.Scenes
                 e.Add(new TextureComponent("PuzzlePiece"));
                 e.Add(new BoxComponent(new AABB(pos + new Vector2(64, 32), new Vector2(64, 32))));
                 e.Add(new PuzzleComponent(PieceType.Beginning));
+                e.Add(new AnimationComponent(new[] { new Rectangle(0, 0, 128, 64) }));
             }
 
             CompletionSystem sys = MainWorld.GetSystem<CompletionSystem>();

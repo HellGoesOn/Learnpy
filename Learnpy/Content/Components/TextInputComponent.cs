@@ -7,7 +7,7 @@
 
         public TextInputComponent(string text, bool active = false)
         {
-            Text = text;
+            Text = string.IsNullOrWhiteSpace(text) ? "" : text;
             Active = active;
         }
     }
