@@ -1,4 +1,5 @@
 start=Начать;
+trophies=Достижения;
 options=Настройки;
 resolution=Разрешение экрана;
 exit=Выход;

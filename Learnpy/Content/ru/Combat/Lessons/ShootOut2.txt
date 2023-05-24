@@ -1,0 +1,3 @@
+Name="1. Тест"
+Enemies=[Desc="Худший в мире лжец?" Answer="Кравцов" Texture="Enemy"  Sensitive="No"
+Desc="Сработало 30-40%?" Answer="Нет" Texture="Enemy"  Sensitive="No"]

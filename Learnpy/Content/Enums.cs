@@ -17,9 +17,11 @@
 
     public enum GameState
     {
+        LoginScreen,
         MainMenu,
         Cyberspace,
         Playground,
-        Combat
+        Combat,
+        CombatSelect
     }
 }

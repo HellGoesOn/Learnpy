@@ -8,5 +8,7 @@ namespace Learnpy.Content.Scenes.Transitions
 {
     public interface IContext
     {
+        Func<bool> GetSuccessCondition();
+        Func<bool> GetFailCondition();
     }
 }

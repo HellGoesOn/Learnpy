@@ -1,6 +1,7 @@
 ﻿using Learnpy.Content.Components;
 using Learnpy.Content.Scenes.Transitions;
 using Learnpy.Content.Systems;
+using Learnpy.Core;
 using Learnpy.Core.ECS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -187,14 +188,14 @@ namespace Learnpy.Content.Scenes
                         var diag = cyberSpace.Create();
                         diag.Add(new DialogueComponent(new[] {
                 "> Сегодня замечательный день.",
-                "> Вы, как никогда, готовы получать всё новые и новые знания",
-                "> С сегодняшенго дня, Вы будете изучать Python в совершенно новой Академии:" +
-                "\n\"­«Пик Надежды.»\"",
-                "> Что Вас ждёт внутри стен этой академии?",
-                "> Сможете ли Вы наконец постичь Python?",
-                "> Есть только один способ это выяснить..."
+                "> Вы чувствуете непреодолимую тягу к знаниям. ",
+                "> Пораскидав мозгами, вы принимаете решение потратить ближайшее время" +
+                "\nна изучение языка Python",
+                "> ...Но это звучит очень и очень скучно...",
+                "> ...вот был бы способ...",
+                "> ...сделать это чуть-чуть более увлекательным..."
             }) {
-                            Font = Assets.DefaultFont, AutoScroll = true, Speed = 4f, CenteredOrigin = true, Color = Color.Yellow, TimeUntilNextPageMax = 120,
+                            Font = Assets.DefaultFont, AutoScroll = true, Speed = 4f, CenteredOrigin = true, Color = Color.Yellow, TimeUntilNextPageMax = 180,
                             OnDialogueEnd = () =>
                             {
                                 cyberSpace.Destroy(diag.Id);
@@ -231,6 +232,7 @@ namespace Learnpy.Content.Scenes
 
         public void SeemsLikeItWillHaveToWait(World cyberSpace, Entity player, Entity bug, Entity backdrop, Entity backdrop2, Entity sun)
         {
+            SoundEngine.StartMusic("SMT", true);
             //var hint = cyberSpace.Create();
             //hint.Add(new DialogueComponent(new[]
             //{
@@ -274,13 +276,12 @@ namespace Learnpy.Content.Scenes
             var diag = cyberSpace.Create();
             diag.Add(new DialogueComponent(new[] {
                 "     ",
-                "> Похоже, перед тем как Вы сможете продолжить свой путь, Вам придётся кое-с-чем разобраться.",
-                "> То, что Вы сейчас наблюдаете, нечто иное, как \"Ошибка\".",
-                "> Они появляются повсюду, а виной тому - плохой код, написанный неграмотными людьми.",
-                "> Конечно, Вас это не касается.",
-                "> Вам придётся сразиться с этим \"Багом\"."
+                "> Похоже, что Ваше желание сейчас будет исполнено.",
+                "> Существо, представшее перед Вами, не выглядит дружелюбно.",
+                "> Кроме того, Вас сильно смущает тот факт, что окружение изменило цвет.",
+                "> Готовьтесь к бою!"
             }) {
-                Font = Assets.DefaultFont, AutoScroll = true, Speed = 4f, CenteredOrigin = true, Color = Color.Yellow, TimeUntilNextPageMax = 120,
+                Font = Assets.DefaultFont, AutoScroll = true, Speed = 4f, CenteredOrigin = true, Color = Color.Yellow, TimeUntilNextPageMax = 180,
                 OnDialogueEnd = () =>
                 {
                     cyberSpace.Destroy(diag.Id);
@@ -291,8 +292,9 @@ namespace Learnpy.Content.Scenes
                         SlideSpeed = 0.02f,
                         Context = new CombatContext() {
                             BulletCount = 5,
-                            EnemyCount = 2
-                        }
+                            EnemyCount = 2,
+                            LessonPath = "ShootOut1"
+                        },
                     });
                 }
             });

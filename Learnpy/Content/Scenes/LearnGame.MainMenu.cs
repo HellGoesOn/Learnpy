@@ -35,6 +35,10 @@ namespace Learnpy.Content.Scenes
             backdrop.Add(new TextureComponent("Pixel"));
             backdrop.Add(new TransformComponent(new Vector2(0)));
             backdrop.Add(new DrawDataComponent(new Vector2(0, 0), new Vector2(1360, 768), 1, new Color(0.463f, 0.11f, 0.11f)));
+            backdrop.Add(new TextComponent(
+                new TextContext($"Добро пожаловать, {Database.User.Name}!\nГруппа {Database.User.Group}", new Vector2(40, 40), Assets.DefaultFont, Color.Silver) {
+                    Opacity = 1f,
+                }));
 
 
             var backdrop2 = MainMenu.Create();
@@ -94,6 +98,7 @@ namespace Learnpy.Content.Scenes
 
             var mainMenu = MainMenu.Create();
             mainMenu.Add(new OpacityComponent(-1.75f, 1.1f, 0.1f));
+            var achievementsOption = new MenuOption("trophies", () => { });
             var startOption = new MenuOption("start", () =>
             {
             });
@@ -106,7 +111,7 @@ namespace Learnpy.Content.Scenes
 
                 mainMenu.Get<MenuComponent>().Options[0].Name = "start";
                 /*GameState = GameState.Playground;*/
-                sceneTransitions.Add(new SlideTransition(GameState, GameState.Cyberspace, (Direction)new Random().Next((int)Direction.Down+1)) {
+                sceneTransitions.Add(new SlideTransition(GameState, GameState.CombatSelect, (Direction)new Random().Next((int)Direction.Down+1)) {
                     Color = Color.Black,
                     SlideSpeed = 0.1f,
                     Delay = 1f,
@@ -121,7 +126,7 @@ namespace Learnpy.Content.Scenes
             };
             mainMenu.Add(new TransformComponent(new Vector2(680, 404)));
             mainMenu.Add(new MenuComponent
-                (startOption,
+                (startOption, achievementsOption,
                 new MenuOption("options", () =>
                 {
                     mainMenu.Get<MenuComponent>().IsSelected = false;
@@ -198,7 +203,7 @@ namespace Learnpy.Content.Scenes
                     this.Exit();
                 })) {
                 IsSelected = true,
-                Font = Assets.DefaultFontBig
+                Font = Assets.DefaultFont
             });
 
         }

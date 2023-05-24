@@ -35,6 +35,7 @@ namespace Learnpy
                 sw.WriteLine($"ScreenHeight=768");
                 sw.WriteLine($"Language=en");
                 sw.Write($"Volume=1.0");
+                sw.Write($"Server=\"DESKTOP-JB2KS99\\SQLEXPRESS\"");
                 sw.Close();
             } else {
                 File.WriteAllText(config, string.Empty);
@@ -44,6 +45,7 @@ namespace Learnpy
                 sw.WriteLine($"ScreenHeight={ScreenHeight}");
                 sw.WriteLine($"Language={Language}");
                 sw.WriteLine($"Volume={Volume}");
+                sw.WriteLine($"Server=\"{Database.ServerName}\"");
                 sw.Close();
             }
         }
@@ -52,23 +54,26 @@ namespace Learnpy
         {
             if (File.Exists(config)) {
                 string[] lines = File.ReadAllLines(config);
-                if(lines.Length < 4) {
+                if(lines.Length < 5) {
                     ScreenWidth = 1360;
                     ScreenHeight = 768;
                     Language = "en";
                     Volume = 1.0f;
+                    Database.ServerName = @"DESKTOP-JB2KS99\SQLEXPRESS";
                     return;
                 }
                 ScreenWidth = int.Parse(Regex.Match(lines[0], "(?<==).*").Value);
                 ScreenHeight = int.Parse(Regex.Match(lines[1], "(?<==).*").Value);
                 Language = Regex.Match(lines[2], "(?<==).*").Value;
                 Volume = float.Parse(Regex.Match(lines[3], "(?<==).*").Value);
+                Database.ServerName = Util.MatchBetween(lines[4], "Server=");
             }
             else {
                 ScreenWidth = 1360;
                 ScreenHeight = 768;
                 Language = "en";
                 Volume = 1.0f;
+                Database.ServerName = @"DESKTOP-JB2KS99\SQLEXPRESS";
             }
         }
     }

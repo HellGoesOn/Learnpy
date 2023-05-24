@@ -20,6 +20,9 @@ namespace Learnpy.Content.Scenes
         int crosshairTarget;
         float dist = 360;
         bool showCode;
+        bool ended;
+
+        float showErrorTime;
 
         Entity playerField;
         Entity enemyField;
@@ -37,7 +40,10 @@ namespace Learnpy.Content.Scenes
 
         public void BeginCombat(CombatContext context)
         {
+            ended = false;
+            showErrorTime = 0;
             showCode = false;
+
             if (context == null)
                 context = new CombatContext();
 
@@ -62,6 +68,9 @@ namespace Learnpy.Content.Scenes
             background.Add(new AnimationComponent() {
                 Action = () =>
                 {
+                    if (showErrorTime > 0)
+                        showErrorTime -= 0.05f;
+
                     cyberTime += 0.15f;
                     if (dist < 740) {
                         dist += 5.0f;
@@ -77,6 +86,26 @@ namespace Learnpy.Content.Scenes
                 },
                 OnEndAction = () =>
                 {
+                    if (context.GetSuccessCondition().Invoke() && !ended) {
+                        sceneTransitions.Add(new SlideTransition(GameState, context.ProceedsTo, (Direction)new Random().Next((int)Direction.Down + 1)) {
+                            Color = Color.Black,
+                            SlideSpeed = 0.02f
+                        });
+
+                        if (context.LessonPath == "ShootOut1")
+                            Database.GiveAchievement("Привет Мир!");
+
+                        ended = true;
+                    }
+
+                    if (context.GetFailCondition().Invoke() && !ended) {
+                        sceneTransitions.Add(new SlideTransition(GameState, context.ReturnsTo, (Direction)new Random().Next((int)Direction.Down + 1)) {
+                            Color = Color.Black,
+                            SlideSpeed = 0.02f
+                        });
+                        ended = true;
+                    }
+
                     if (Input.PressedKey(Keys.Delete)) {
                         showCode = !showCode;
                         ref var c = ref background.Get<TextInputComponent>();
@@ -91,27 +120,23 @@ namespace Learnpy.Content.Scenes
                             combatBullets.Add(bullet);
                         }
                         bulletsOnStandBy.Clear();
-                        if(enemies.Count > 0) {
-                            sceneTransitions.Add(new SlideTransition(GameState, GameState.MainMenu, (Direction)new Random().Next((int)Direction.Down + 1)) {
-                                Color = Color.Black,
-                                SlideSpeed = 0.02f
-                            });
-                        }
 
                     } else {
 
-                        if (combatBullets[0].Get<TransformComponent>().Position.X > 1360 + 64 * 60) {
+                        if (combatBullets[0].Get<TransformComponent>().Position.X > 1360 + 64 * 10) {
                             if (enemies.Count > 0) {
                                 string attemptedSolution = textBackDrop.Get<TextComponent>().Get(0).Text;
-                                string requiredSolution = enemies[crosshairTarget].Get<RequirementComponent>().Solution;
-                                if (attemptedSolution == requiredSolution) {
+                                context.BulletCount--;
+                                bool gotanswer = enemies[crosshairTarget].Get<RequirementComponent>().IsMatching(attemptedSolution);
+                                if (gotanswer) {
                                     ref TextInputComponent t = ref textBackDrop.Get<TextInputComponent>();
                                     t.Text = "";
                                     w.Destroy(enemies[crosshairTarget].Id);
                                     enemies.RemoveAt(crosshairTarget);
+                                    context.EnemyCount--;
                                     crosshairTarget = 0;
-
                                     if(combatBullets.Count <= 1) {
+                                        context.BulletCount = 1;
                                         var bullet = bulletsOnStandBy[0];
                                         ref var pos = ref bullet.Get<TransformComponent>();
                                         pos.Position = new Vector2(36.5f * 4 + 174, 134 + 60 * combatBullets.Count - 1);
@@ -120,13 +145,10 @@ namespace Learnpy.Content.Scenes
                                         combatBullets.Add(bullet);
                                         bulletsOnStandBy.RemoveAt(0);
                                     }
-
-                                    if (enemies.Count <= 0) {
-                                        sceneTransitions.Add(new SlideTransition(GameState, GameState.Playground, (Direction)new Random().Next((int)Direction.Down + 1)) {
-                                            Color = Color.Black,
-                                            SlideSpeed = 0.02f
-                                        });
-                                    }
+                                }
+                                else {
+                                    errorText = enemies[crosshairTarget].Get<RequirementComponent>().GetText(attemptedSolution);
+                                    showErrorTime = 10f;
                                 }
                             }
 
@@ -206,6 +228,30 @@ namespace Learnpy.Content.Scenes
                 new RequirementComponent("Худший в мире?", "Олег")
             };
 
+            MissReason[] missReasons = new[]
+            {
+                new MissReason() {
+                    Text ="Неверный тип данных!\nОтвет должен быть числом!",
+                    Condition = (string s) =>
+                    {
+                        bool res = int.TryParse(s, out var test);
+
+                        return !res;
+                    }
+                },
+                new MissReason() {
+                    Text ="Введено слишком низкое значение!",
+                    Condition = (string s) =>
+                    {
+                        int.TryParse(s, out var res);
+                        return res <= -1000;
+                    }
+                }
+            };
+
+
+            CombatContextReader.ReadCombatContext(w, "Content/ru/Combat/Lessons/" + context.LessonPath, enemies);
+            /*
             for (int i = 0; i < context.EnemyCount; i++) {
                 var bug = w.Create();
                 bug.Add(new TransformComponent(new Vector2(1000, 240) + enemyPositionOffsets[i]));
@@ -223,8 +269,11 @@ namespace Learnpy.Content.Scenes
                 bug.Add(new TextComponent(new TextContext(requirements[i].Description, Vector2.Zero) {
                     Origin = Assets.DefaultFont.MeasureString(requirements[i].Description) * 0.5f
                 }));
-                enemies.Add(bug);
-            }
+
+                if (i == 1)
+                    bug.Get<RequirementComponent>().MissReasons = missReasons;
+                    enemies.Add(bug);
+            }*/
 
             string combatText = "БИТВА В ПРОЦЕССЕ";
             var blackBar = w.Create();
@@ -315,8 +364,33 @@ namespace Learnpy.Content.Scenes
             });
 
             CreateBullletPapyrus(w);
-        }
 
+            var errorMessage = w.Create();
+            errorMessage.Add(new TextureComponent("Pixel"));
+            errorMessage.Add(new DrawDataComponent(new Vector2(0.5f, 0.5f), new Vector2(1, 1), 1f, Color.Black));
+            errorMessage.Add(new TransformComponent(680, 384));
+            errorMessage.Add(new TextComponent(
+                new TextContext("", Vector2.Zero)));
+            errorMessage.Add(new AnimationComponent() {
+                Action = () =>
+                {
+                    var measurement = Assets.DefaultFont.MeasureString(errorText);
+                    ref var txt = ref errorMessage.Get<TextComponent>().Texts[0];
+                    txt.Text = errorText;
+                    txt.Color = Color.DarkRed;
+                    txt.Origin = measurement * 0.5f;
+                    txt.Font = Assets.DefaultFont;
+                    txt.Scale = new Vector2(1.25f);
+                    txt.Opacity = showErrorTime;
+                    ref var dr = ref errorMessage.Get<DrawDataComponent>();
+                    ref var op = ref errorMessage.Get<OpacityComponent>();
+                    dr.Scale = measurement * 1.35f;
+                    op.TargetValue = showErrorTime;
+                }
+            });
+            errorMessage.Add(new OpacityComponent(0, 0, 1));
+        }
+        string errorText = "";
         private Entity ShootFunc(Entity bullet)
         {
             if (Input.PressedKey(Keys.E) && !showCode) {

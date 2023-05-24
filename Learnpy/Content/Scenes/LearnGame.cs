@@ -37,6 +37,8 @@ namespace Learnpy.Content.Scenes
 
         internal List<ISceneTransition> sceneTransitions = new List<ISceneTransition>();
 
+        internal float deltaTime;
+
         internal LearnGame()
         {
             GameOptions.Load();
@@ -53,6 +55,9 @@ namespace Learnpy.Content.Scenes
             gdm.PreferredBackBufferHeight = GameOptions.ScreenHeight;
             gdm.ApplyChanges();
 
+            Worlds.Add(GameState.LoginScreen, new());
+            Worlds.Add(GameState.CombatSelect, new());
+
             Worlds.Add(GameState.Cyberspace, new World());
             MainWorld = new World();
             MainWorld.camera.centre = new Vector2(1360, 768) * 0.5f;
@@ -60,8 +65,9 @@ namespace Learnpy.Content.Scenes
             MainMenu.camera.centre = new Vector2(1360, 768) * 0.5f;
             Worlds.Add(GameState.Combat, new World());
             Worlds[GameState.Combat].camera.centre = new Vector2(1360, 768) * 0.5f;
+            Worlds[GameState.CombatSelect].camera.centre = new Vector2(1360, 768) * 0.5f;
 
-            GameState = GameState.MainMenu;
+            GameState = GameState.LoginScreen;
 
             Worlds.Add(GameState.MainMenu, MainMenu);
             Worlds.Add(GameState.Playground, MainWorld);
@@ -71,6 +77,7 @@ namespace Learnpy.Content.Scenes
             InitializeMainMenu();
             InitializeCyberspace();
             BeginCombat(null);
+            DoLogin();
 
             // init main playground
             MainWorld.AddCollection<TransformComponent>();
@@ -137,6 +144,7 @@ namespace Learnpy.Content.Scenes
 		protected override void Update(GameTime gameTime)
 		{
 			base.Update(gameTime);
+            deltaTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             SoundEngine.Update();
             if(GameOptions.NeedsUpdate) {
                 gdm.PreferredBackBufferWidth = GameOptions.ScreenWidth;
@@ -151,7 +159,7 @@ namespace Learnpy.Content.Scenes
                 SentenceFromText.Load(MainWorld, MainWorld.GetSystem<CompletionSystem>().LevelTarget-1);
             }
 
-            if (Input.PressedKey(Keys.End)) 
+            if (Input.PressedKey(Keys.F4)) 
                 sceneTransitions.Add(new SlideTransition(GameState, GameState.MainMenu, (Direction)new Random().Next((int)Direction.Down + 1)) {
                 Color = Color.Black,
                 SlideSpeed = 0.02f

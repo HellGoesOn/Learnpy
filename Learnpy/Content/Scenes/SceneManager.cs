@@ -18,6 +18,10 @@ namespace Learnpy.Content.Scenes
                 EntryPoint.Instance.GameState = scene;
                 World w = EntryPoint.Instance.Worlds[scene];
                 switch (scene) {
+                    case GameState.CombatSelect:
+                        w.WipeWorld();
+                        EntryPoint.Instance.InitCombatSelectScreen();
+                        break;
                     case GameState.MainMenu:
                         w.WipeWorld();
                         SoundEngine.StartMusic("MainTheme", true);
@@ -34,7 +38,6 @@ namespace Learnpy.Content.Scenes
                     case GameState.Combat:
                         w.WipeWorld();
                         EntryPoint.Instance.Worlds[GameState.Combat].WipeWorld();
-                        SoundEngine.StartMusic("MassYike", true);
                         EntryPoint.Instance.BeginCombat(context as CombatContext);
                         break;
                 }

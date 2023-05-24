@@ -21,6 +21,10 @@ namespace Learnpy.Content.Systems
             foreach (Entity e in gameState.ActiveEntities.Where(x => x.Has<DialogueComponent>())) {
                 ref var diag = ref e.Get<DialogueComponent>();
 
+
+                if (Input.PressedKey(Keys.E))
+                    diag.TimeUntilNextPage = diag.TimeUntilNextPageMax;
+
                 if (diag.Progress <= 1f)
                     diag.Progress += diag.Speed;
                 else {

@@ -16,5 +16,14 @@ namespace Learnpy
         {
             return Regex.Replace(text, "(.{" + lineLength + "})" + ' ', "$1" + Environment.NewLine);
         }
+
+        public static string MatchBetween(string inputText, string precedingText = "", string start = "\"", string end = "\"")
+        {
+            string escapedStart = Regex.Escape(start); 
+            string escapedEnd = Regex.Escape(end);
+            string pattern = $"(?<={precedingText}{escapedStart})(.*?)(?={escapedEnd})";
+            string match = Regex.Match(inputText, pattern, RegexOptions.Singleline).Value;
+            return match;
+        }
     }
 }

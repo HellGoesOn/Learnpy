@@ -39,6 +39,8 @@ namespace Learnpy
             } else if (obj == (char)8) {
                 if (editedString.Length >= 1 && (textCursor >= 0 && textCursor < editedString.Length)) {
                     textCursor--;
+                    if (textCursor < 0)
+                        textCursor = 0;
                     editedString = editedString.Remove(textCursor, 1);
                 }
 

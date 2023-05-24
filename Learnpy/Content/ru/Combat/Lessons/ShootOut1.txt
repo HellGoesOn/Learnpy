@@ -1,0 +1,3 @@
+Name="Обучение"
+Enemies=[Desc="2+2?" Answer="4" Texture="Enemy" 
+Desc="Вывести 'Hello World!'" Answer="print('Hello World!')" Texture="Enemy"  Sensitive="No"]
